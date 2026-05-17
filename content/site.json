@@ -1,7 +1,7 @@
 {
   "contact": {
-    "headline": "Email's the fastest.",
-    "blurb": "Based in London. Available for new work. Response time is usually same day.",
+    "headline": "Feel free to contact me!",
+    "blurb": "Based in London. Available for work. Response time is usually same day.",
     "footer": "© 2026 Toby Redshaw",
     "links": [
       {
@@ -35,21 +35,21 @@
   },
   "experience": [
     {
-      "role": "Senior Business Analyst",
-      "co": "Accenture",
-      "years": "2023 — now",
+      "role": "Business Analyst",
+      "co": "Podium Analytics",
+      "years": "NOV 2024 — now",
       "current": true
     },
     {
-      "role": "Analyst",
-      "co": "The Co-operative Group",
-      "years": "2021 — 2023",
+      "role": "QA Analyst",
+      "co": "Podium Analytics",
+      "years": "SEPT 2024 - SEPT 2025",
       "current": false
     },
     {
-      "role": "Economist",
-      "co": "HMRC",
-      "years": "2019 — 2021",
+      "role": "MEng, Biomedical Engineering",
+      "co": "Imperial College London",
+      "years": "2020 — 2024",
       "current": false
     }
   ],
@@ -76,24 +76,24 @@
       }
     ]
   },
-  "tagline": "I build things, mostly with code, sometimes on a bike.",
+  "tagline": "Currently building things, and my remaining time is spent swimming, cycling, or running.",
   "now": [
     {
       "label": "LOCATION",
       "main": "London",
-      "sub": "South west, mostly.",
+      "sub": "Hammersmith",
       "tone": "dark"
     },
     {
       "label": "TRAINING",
-      "main": "70.3 · Sep 2026",
-      "sub": "Week 8 of 20. Swim is holding.",
+      "main": "Ironman 70.3 Costa Navarino · Oct 2026",
+      "sub": "Week 2 of 24 - Increasing the miles",
       "tone": "coral"
     },
     {
       "label": "READING",
-      "main": "Ask me",
-      "sub": "Varies by week.",
+      "main": "Never Split the Difference",
+      "sub": "Chris Voss",
       "tone": "seafoam"
     }
   ],
