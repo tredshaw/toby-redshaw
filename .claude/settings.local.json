@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp \"/tmp/design-extract/portfolio/project/Portfolio.html\" /Users/toby/Documents/Business/Projects/Portfolio/index.html)",
+      "Bash(cp /tmp/design-extract/portfolio/project/assets/grain.svg /Users/toby/Documents/Business/Projects/Portfolio/assets/grain.svg)",
+      "Bash(gh auth *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(curl -sSL -o /Users/toby/Documents/Business/Projects/Portfolio/assets/portrait.jpg \"https://media.licdn.com/dms/image/v2/D5603AQE9ET_q15mGdA/profile-displayphoto-shrink_800_800/B56ZeIkcNDGQAc-/0/1750342944043?e=1780531200&v=beta&t=4fjWUVq1HGT09-DGATdKuqI5ADxcw9Bp27Mnsbb3daE\")"
+    ]
+  }
+}

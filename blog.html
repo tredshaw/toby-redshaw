@@ -53,6 +53,9 @@
     .post-row:hover .post-title { color: var(--fg-bright); }
     .post-date { font-family: var(--font-mono); font-size: 10px; color: var(--fg-faint); width: 110px; flex-shrink: 0; transition: color var(--dur-base); letter-spacing: 0.06em; }
     .post-title { font-family: var(--font-display); font-weight: 300; font-size: var(--fs-2xl); color: var(--fg); line-height: var(--lh-snug); transition: color var(--dur-base); letter-spacing:-0.01em; }
+    .tr-mark { display: inline-block; transform-origin: 50% 50%; }
+    .tr-mark:hover { animation: spin-tr 1.4s linear infinite; }
+    @keyframes spin-tr { from { transform: rotate(0); } to { transform: rotate(360deg); } }
     * { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
     *::-webkit-scrollbar { width: 6px; } *::-webkit-scrollbar-track { background: var(--bg); } *::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 999px; }
   </style>
@@ -97,7 +100,7 @@ function SidebarNav() {
     <nav style={{ position:'fixed', left:0, top:0, bottom:0, width:56, display:'flex', flexDirection:'column', alignItems:'center', padding:'22px 0', borderRight:'1px solid rgba(240,235,226,0.06)', zIndex:100, gap:0 }}>
       <a href="index.html" className="hoverable" style={{ background:'none', border:'none', cursor:'none', marginBottom:26, padding:0, textDecoration:'none' }}>
         {scrolled ? (
-          <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, fontWeight:500, letterSpacing:'0.2em', color:'var(--fg-bright)' }}>T<span style={{ color:'var(--accent)' }}>·</span>R</span>
+          <span className="tr-mark" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, fontWeight:500, letterSpacing:'0.2em', color:'var(--fg-bright)' }}>T<span style={{ color:'var(--accent)' }}>·</span>R</span>
         ) : (
           <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:7, fontWeight:500, letterSpacing:'0.18em', color:'var(--fg-bright)', lineHeight:1.5, display:'flex', flexDirection:'column', alignItems:'center', textTransform:'uppercase' }}>
             <span>TOBY</span>
