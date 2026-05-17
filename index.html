@@ -354,13 +354,16 @@ function Projects() {
             </div>
           </div>
         ))}
-        {projects.filter(p=>!p.hero).map((p,i)=>(
-          <div key={p.title} className="project-card hoverable" style={{ gridColumn: i===0?'2/3':'3/4', gridRow: i===0?'1/2':'1/2' }}>
-            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--fg-muted)', marginBottom:10 }}>{p.status}</div>
-            <h4 style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-2xl)', lineHeight:1.1, color:'var(--fg-bright)', marginBottom:10 }}>{p.title}</h4>
-            <p style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-sm)', lineHeight:'var(--lh-prose)', color:'var(--fg-muted)' }}>{p.desc}</p>
-          </div>
-        ))}
+        {projects.filter(p=>!p.hero).map((p,i)=>{
+          const bg = i===0 ? 'var(--accent)' : '#ff8a7a';
+          return (
+            <div key={p.title} className="hoverable" style={{ background:bg, borderRadius:'var(--r-md)', padding:'24px 22px', gridColumn: i===0?'2/3':'3/4', gridRow: i===0?'1/2':'1/2', cursor:'default' }}>
+              <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'rgba(13,31,53,0.65)', marginBottom:10 }}>{p.status}</div>
+              <h4 style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-2xl)', lineHeight:1.1, color:'#0a1a2e', marginBottom:10 }}>{p.title}</h4>
+              <p style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-sm)', lineHeight:'var(--lh-prose)', color:'rgba(13,31,53,0.78)' }}>{p.desc}</p>
+            </div>
+          );
+        })}
         <div style={{ gridColumn:'2/4', gridRow:'2/3', background:'transparent', border:'1px dashed var(--border)', borderRadius:'var(--r-md)', padding:'20px', display:'flex', alignItems:'center', justifyContent:'center' }}>
           <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-faint)', letterSpacing:'0.1em', textTransform:'uppercase' }}>+ more coming</span>
         </div>
