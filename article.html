@@ -54,6 +54,11 @@
     .tr-mark { display: inline-block; transform-origin: 50% 50%; }
     .tr-mark:hover { animation: spin-tr 1.4s linear infinite; }
     @keyframes spin-tr { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+    .wave-line { transform-origin: 50% 50%; animation: wave 2.6s ease-in-out infinite; }
+    .wave-line:nth-child(2) { animation-delay: -0.85s; }
+    .wave-line:nth-child(3) { animation-delay: -1.7s; }
+    @keyframes wave { 0%,100% { transform: translateX(-1.2px); } 50% { transform: translateX(1.2px); } }
+    @keyframes menuDrop { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: none; } }
     * { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
     *::-webkit-scrollbar { width: 6px; } *::-webkit-scrollbar-track { background: var(--bg); } *::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 999px; }
   </style>
@@ -114,6 +119,55 @@ const TCMDS = {
   blog:['On forecasting under uncertainty     · 2026-04-12','Three months of training, one DNF   · 2026-03-08'],
   contact:["toby@redshaw.me"],
 };
+function FloatingMenu({ current }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const onClick = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const onKey = e => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('mousedown', onClick); document.removeEventListener('keydown', onKey); };
+  }, []);
+  const items = [
+    { key:'home',     label:'Home',     href:'index.html' },
+    { key:'articles', label:'Articles', href:'blog.html'  },
+  ];
+  return (
+    <div ref={ref} style={{ position:'fixed', top:18, right:18, zIndex:300 }}>
+      <button onClick={() => setOpen(o => !o)} aria-label="Menu" className="hoverable" style={{ width:44, height:44, background:'rgba(13,31,53,0.78)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)', border:`1px solid ${open?'var(--accent)':'var(--border-strong)'}`, borderRadius:'var(--r-md)', cursor:'none', display:'flex', alignItems:'center', justifyContent:'center', padding:0, transition:'border-color var(--dur-base), background var(--dur-base)' }}>
+        <svg width="22" height="14" viewBox="0 0 22 14" style={{ overflow:'visible' }}>
+          {open ? (
+            <g>
+              <line x1="4" y1="3" x2="18" y2="11" stroke="var(--accent)" strokeWidth="1.6" strokeLinecap="round" />
+              <line x1="4" y1="11" x2="18" y2="3" stroke="var(--accent)" strokeWidth="1.6" strokeLinecap="round" />
+            </g>
+          ) : (
+            <g>
+              <path className="wave-line" d="M 2 3 Q 6.5 0.4 11 3 T 20 3" stroke="var(--fg-bright)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+              <path className="wave-line" d="M 2 7 Q 6.5 4.4 11 7 T 20 7" stroke="var(--accent)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+              <path className="wave-line" d="M 2 11 Q 6.5 8.4 11 11 T 20 11" stroke="var(--fg-bright)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+            </g>
+          )}
+        </svg>
+      </button>
+      {open && (
+        <div style={{ position:'absolute', top:52, right:0, minWidth:180, background:'rgba(13,31,53,0.94)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid var(--border-strong)', borderRadius:'var(--r-md)', padding:6, boxShadow:'var(--shadow-2)', animation:'menuDrop 0.22s var(--ease-out-quart)' }}>
+          {items.map(item => {
+            const active = current === item.key;
+            return (
+              <a key={item.key} href={item.href} className="hoverable" style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'10px 14px', fontFamily:"'JetBrains Mono',monospace", fontSize:10.5, textTransform:'uppercase', letterSpacing:'0.14em', color: active?'var(--accent)':'var(--fg)', textDecoration:'none', borderRadius:'var(--r-sm)', transition:'background var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{ if(!active) e.currentTarget.style.background='rgba(62,207,178,0.08)'; }} onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; }}>
+                <span>{item.label}</span>
+                <span style={{ color:active?'var(--accent)':'var(--fg-faint)', fontSize:9 }}>{active ? '●' : '→'}</span>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Terminal() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
@@ -253,6 +307,7 @@ function App() {
     <>
       <Terminal />
       <SidebarNav />
+      <FloatingMenu current="articles" />
       <div className="page">
         <Article />
         <Footer />
