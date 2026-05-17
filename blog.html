@@ -276,8 +276,9 @@ function Index() {
           </a>
         ))}
       </div>
-      <div style={{ marginTop:48, paddingTop:24, borderTop:'1px solid var(--border)' }}>
-        <a href="index.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', textDecoration:'none' }}>← Back to portfolio</a>
+      <div style={{ marginTop:48, paddingTop:32, borderTop:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
+        <a href="index.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--bg)', background:'var(--accent)', padding:'11px 20px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'background var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.background='var(--accent-hover)'} onMouseLeave={e=>e.currentTarget.style.background='var(--accent)'}><span>←</span> Back to portfolio</a>
+        <span style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-md)', color:'var(--fg-muted)' }}>That's everything for now.</span>
       </div>
     </section>
   );

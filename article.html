@@ -171,8 +171,9 @@ function Terminal() {
 function Article() {
   return (
     <article className="article-wrap">
-      <div className="reveal" style={{ marginBottom:32 }}>
-        <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.14em', color:'var(--fg-muted)', textDecoration:'none' }}>← All writing</a>
+      <div className="reveal" style={{ marginBottom:32, display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
+        <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}><span>←</span> All writing</a>
+        <a href="index.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}>Portfolio home</a>
       </div>
       <header className="reveal d1" style={{ marginBottom:48 }}>
         <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.14em', color:'var(--accent)', marginBottom:18, display:'flex', gap:18, alignItems:'center' }}>
