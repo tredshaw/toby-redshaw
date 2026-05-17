@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>On forecasting under uncertainty — Toby Redshaw</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy-900:#0a1a2e;--navy-800:#0d1f35;--navy-700:#112844;--navy-600:#16324f;--navy-500:#1d3c5e;
+      --seafoam-400:#3ecfb2;--seafoam-500:#2fb89c;--seafoam-300:#6adcc4;--seafoam-glow:rgba(62,207,178,0.18);
+      --cream-50:#f5f1e8;--cream-100:#f0ebe2;--cream-200:#d9d3c6;
+      --muted-400:#8a93a4;--muted-500:#6b7280;--muted-600:#4b5563;
+      --coral-400:#ff6b5b;--coral-500:#e85948;--coral-300:#ff8a7a;
+      --bg:var(--navy-800);--bg-elevated:var(--navy-700);--bg-hover:var(--navy-600);
+      --fg:var(--cream-100);--fg-bright:var(--cream-50);--fg-muted:var(--muted-500);--fg-faint:var(--muted-600);
+      --accent:var(--seafoam-400);--accent-hover:var(--seafoam-300);--accent-press:var(--seafoam-500);--accent-soft:var(--seafoam-glow);
+      --secondary-accent:var(--coral-400);
+      --border:rgba(240,235,226,0.08);--border-strong:rgba(240,235,226,0.16);--border-accent:var(--seafoam-400);
+      --font-display:'Fraunces','Times New Roman',Georgia,serif;
+      --font-body:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --font-mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+      --fs-xs:12px;--fs-sm:14px;--fs-base:16px;--fs-md:18px;--fs-lg:22px;--fs-xl:28px;--fs-2xl:38px;--fs-3xl:52px;--fs-4xl:72px;--fs-5xl:96px;--fs-6xl:128px;
+      --lh-tight:1.05;--lh-snug:1.25;--lh-body:1.9;--lh-prose:1.7;
+      --tracking-mono:0.12em;--tracking-display:-0.02em;--tracking-tight:-0.01em;
+      --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-6:24px;--s-8:32px;--s-10:40px;--s-12:48px;--s-16:64px;--s-20:80px;--s-24:96px;--s-32:128px;
+      --r-sm:2px;--r-md:4px;--r-lg:12px;--r-pill:999px;
+      --shadow-1:0 2px 4px rgba(0,0,0,0.45);--shadow-2:0 8px 24px rgba(0,0,0,0.55);--shadow-3:0 20px 56px rgba(0,0,0,0.7);--shadow-accent:0 0 24px var(--accent-soft);--inset-hairline:inset 0 1px 0 rgba(240,235,226,0.04);
+      --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);--ease-out-quart:cubic-bezier(0.165,0.84,0.44,1);--ease-in-out:cubic-bezier(0.65,0,0.35,1);--ease-funky:cubic-bezier(0.34,1.56,0.64,1);
+      --dur-quick:120ms;--dur-base:240ms;--dur-slow:480ms;--dur-reveal:720ms;--dur-tide:12s;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 300; line-height: var(--lh-body); cursor: none; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    .tide { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(60% 50% at 18% 28%, rgba(62,207,178,0.055), transparent 60%), radial-gradient(70% 65% at 82% 72%, rgba(22,50,79,0.55), transparent 60%), var(--bg); animation: tide var(--dur-tide) ease-in-out infinite alternate; }
+    @keyframes tide { 0% { opacity: 1; } 100% { opacity: 0.85; } }
+    .grain { position: fixed; inset: -50%; z-index: 1; pointer-events: none; background: url('assets/grain.svg') repeat; background-size: 200px 200px; opacity: 0.055; mix-blend-mode: overlay; animation: grainShift 0.8s steps(6) infinite; }
+    @keyframes grainShift { 0%{transform:translate(0,0)}16%{transform:translate(-4%,-2%)}33%{transform:translate(3%,4%)}50%{transform:translate(-3%,1%)}66%{transform:translate(2%,-3%)}83%{transform:translate(-1%,2%)} }
+    .cursor-dot { position: fixed; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width 110ms ease, height 110ms ease, background 110ms ease, border 110ms ease; border: 0px solid transparent; }
+    .cursor-dot.large { width: 22px; height: 22px; background: transparent; border: 2px solid var(--accent); }
+    .progress-bar { position: fixed; top: 0; left: 56px; right: 0; height: 2px; background: transparent; z-index: 150; }
+    .progress-fill { height: 100%; width: 0; background: var(--accent); transition: width 80ms linear; }
+    .page { position: relative; z-index: 2; margin-left: 56px; }
+    .article-wrap { max-width: 720px; padding: 96px 52px 80px; }
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--dur-reveal) var(--ease-out-quart), transform var(--dur-reveal) var(--ease-out-quart); }
+    .reveal.shown { opacity: 1; transform: none; }
+    .d1 { transition-delay: 80ms; } .d2 { transition-delay: 160ms; } .d3 { transition-delay: 240ms; }
+    .prose p { font-family: var(--font-body); font-weight: 300; font-size: var(--fs-md); line-height: var(--lh-prose); color: var(--fg); margin-bottom: 24px; }
+    .prose h2 { font-family: var(--font-display); font-weight: 300; font-size: var(--fs-2xl); letter-spacing:-0.015em; color: var(--fg-bright); margin: 56px 0 18px; line-height:1.15; }
+    .prose blockquote { font-family: var(--font-display); font-style: italic; font-weight: 300; font-size: var(--fs-xl); line-height: 1.4; color: var(--secondary-accent); margin: 40px 0; padding-left: 28px; border-left: 2px solid var(--secondary-accent); }
+    .prose a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(62,207,178,0.3); }
+    .prose code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg-elevated); padding: 2px 6px; border-radius: var(--r-sm); color: var(--fg-bright); }
+    * { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+    *::-webkit-scrollbar { width: 6px; } *::-webkit-scrollbar-track { background: var(--bg); } *::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 999px; }
+  </style>
+</head>
+<body>
+<div class="tide"></div>
+<div class="grain"></div>
+<div id="cursor" class="cursor-dot"></div>
+<div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+function SidebarNav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <nav style={{ position:'fixed', left:0, top:0, bottom:0, width:56, display:'flex', flexDirection:'column', alignItems:'center', padding:'22px 0', borderRight:'1px solid rgba(240,235,226,0.06)', zIndex:100, gap:0 }}>
+      <a href="index.html" className="hoverable" style={{ background:'none', border:'none', cursor:'none', marginBottom:26, padding:0, textDecoration:'none' }}>
+        {scrolled ? (
+          <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, fontWeight:500, letterSpacing:'0.2em', color:'var(--fg-bright)' }}>T<span style={{ color:'var(--accent)' }}>·</span>R</span>
+        ) : (
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:7, fontWeight:500, letterSpacing:'0.18em', color:'var(--fg-bright)', lineHeight:1.5, display:'flex', flexDirection:'column', alignItems:'center', textTransform:'uppercase' }}>
+            <span>TOBY</span>
+            <span style={{ color:'var(--accent)', lineHeight:0.5, fontSize:6.5 }}>·</span>
+            <span>REDSHAW</span>
+          </div>
+        )}
+      </a>
+      <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:14 }}>
+        <a href="blog.html" className="hoverable" title="All writing" style={{ textDecoration:'none', display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
+          <div style={{ width:5, height:5, borderRadius:'50%', border:'1px solid rgba(240,235,226,0.18)' }} />
+          <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:6, letterSpacing:'0.12em', color:'rgba(240,235,226,0.18)' }}>IDX</span>
+        </a>
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
+          <div style={{ width:7, height:7, borderRadius:'50%', background:'var(--accent)', boxShadow:'0 0 0 3px rgba(62,207,178,0.14)' }} />
+          <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:6, letterSpacing:'0.12em', color:'var(--accent)' }}>RD</span>
+        </div>
+      </div>
+      <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase', textDecoration:'none', writingMode:'vertical-rl', transform:'rotate(180deg)' }}>← all writing</a>
+    </nav>
+  );
+}
+
+const TCMDS = {
+  help:['Available commands:','  about · projects · blog · contact · clear · exit'],
+  about:['Trained as an economist. Mostly writes Python now.'],
+  projects:['Lab2Launch ——— IN PROGRESS · 2026','Eddy ——————— SHIPPED · 2024'],
+  blog:['On forecasting under uncertainty     · 2026-04-12','Three months of training, one DNF   · 2026-03-08'],
+  contact:["toby@redshaw.me"],
+};
+function Terminal() {
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState('');
+  const [hist, setHist] = useState([]);
+  const inputRef = useRef(null);
+  const outRef = useRef(null);
+  useEffect(() => {
+    const onKey = e => {
+      if (e.key === '/' && !open && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) { e.preventDefault(); setOpen(true); }
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+  useEffect(() => { if (open) { setTimeout(() => inputRef.current?.focus(), 80); if (!hist.length) setHist([{ s:true, t:"toby@portfolio — type 'help' to explore" }]); } }, [open]);
+  useEffect(() => { if (outRef.current) outRef.current.scrollTop = outRef.current.scrollHeight; }, [hist]);
+  const run = cmd => {
+    const k = cmd.trim().toLowerCase();
+    if (!k) return;
+    if (k === 'clear') { setHist([]); setInput(''); return; }
+    if (k === 'exit') { setOpen(false); setInput(''); return; }
+    const res = TCMDS[k] ? TCMDS[k].map(t => ({ t })) : [{ e:true, t:`command not found: ${cmd}  (try 'help')` }];
+    setHist(h => [...h, { p:true, t:cmd }, ...res, { t:'' }]);
+    setInput('');
+  };
+  if (!open) return (
+    <div style={{ position:'fixed', bottom:18, left:'50%', transform:'translateX(-50%)', zIndex:200, pointerEvents:'none' }}>
+      <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'rgba(240,235,226,0.14)', letterSpacing:'0.14em', textTransform:'uppercase' }}>press / to open terminal</span>
+    </div>
+  );
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:500, background:'rgba(10,26,46,0.72)', backdropFilter:'blur(4px)', display:'flex', alignItems:'flex-end' }} onClick={e => { if (e.target===e.currentTarget) setOpen(false); }}>
+      <div style={{ width:'100%', maxWidth:700, margin:'0 auto', background:'#060d16', borderTop:'2px solid var(--accent)', borderLeft:'1px solid rgba(240,235,226,0.06)', borderRight:'1px solid rgba(240,235,226,0.06)', borderRadius:'4px 4px 0 0', display:'flex', flexDirection:'column', maxHeight:'54vh', boxShadow:'0 -24px 64px rgba(0,0,0,0.65)' }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 16px', borderBottom:'1px solid rgba(240,235,226,0.06)' }}>
+          <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--accent)', letterSpacing:'0.14em', textTransform:'uppercase' }}>terminal · toby@portfolio</span>
+          <button onClick={() => setOpen(false)} style={{ background:'none', border:'none', cursor:'none', fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:'var(--fg-muted)', padding:'0 4px' }}>esc ×</button>
+        </div>
+        <div ref={outRef} style={{ flex:1, overflowY:'auto', padding:'12px 16px', fontFamily:"'JetBrains Mono',monospace", fontSize:11, lineHeight:1.85 }}>
+          {hist.map((l,i) => (
+            <div key={i} style={{ color: l.s?'var(--accent)':l.p?'var(--fg-bright)':l.e?'#ff6b5b':'var(--fg-muted)', minHeight: l.t===''?6:'auto' }}>
+              {l.p && <span style={{ color:'rgba(62,207,178,0.38)', marginRight:8 }}>~$</span>}
+              {l.t}
+            </div>
+          ))}
+        </div>
+        <div style={{ padding:'6px 16px 10px', borderTop:'1px solid rgba(240,235,226,0.06)', display:'flex', alignItems:'center', gap:8 }}>
+          <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'rgba(62,207,178,0.38)' }}>~$</span>
+          <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')run(input);if(e.key==='Escape')setOpen(false);}} style={{ flex:1, background:'transparent', border:'none', outline:'none', fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'var(--fg-bright)', caretColor:'var(--accent)', cursor:'text' }} placeholder="type a command…" spellCheck={false} autoComplete="off" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Article() {
+  return (
+    <article className="article-wrap">
+      <div className="reveal" style={{ marginBottom:32 }}>
+        <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.14em', color:'var(--fg-muted)', textDecoration:'none' }}>← All writing</a>
+      </div>
+      <header className="reveal d1" style={{ marginBottom:48 }}>
+        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.14em', color:'var(--accent)', marginBottom:18, display:'flex', gap:18, alignItems:'center' }}>
+          <span>2026-04-12</span><span style={{ color:'var(--fg-faint)' }}>·</span><span>8 min read</span><span style={{ color:'var(--fg-faint)' }}>·</span><span>Forecasting</span>
+        </div>
+        <h1 style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'clamp(42px,5.4vw,76px)', lineHeight:0.98, letterSpacing:'-0.025em', color:'var(--fg-bright)', marginBottom:24 }}>On forecasting under uncertainty</h1>
+        <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-xl)', lineHeight:1.4, color:'var(--fg-muted)' }}>Models, margins of error, and what "good enough" means in practice.</p>
+      </header>
+
+      <div className="prose reveal d2">
+        <p>Every forecast is a confession. It tells you what the forecaster believes, what they're willing to commit to in writing, and — most revealingly — what they're willing to be wrong about. The point is rarely to be <em>right</em>. It's to be wrong in a useful direction.</p>
+
+        <p>I spent most of 2024 building a forecasting tool called <a href="#" className="hoverable">Eddy</a>. The team it served ran a six-hour Friday ritual: pull data from three systems, reconcile, eyeball the residuals, write a one-page memo. The memo was usually correct. It was also, by the time anyone read it, two days late.</p>
+
+        <h2>The problem isn't the model</h2>
+
+        <p>The instinct in this kind of work is to reach for a fancier model. Better features, longer history, a transformer if you're feeling fashionable. But the gap between the team's spreadsheet and the system we replaced it with wasn't accuracy — it was <em>commitment</em>. The team gave you a number and a confidence interval. The new system gave you a number and a confidence interval that updated every fifteen minutes whether you were ready or not.</p>
+
+        <blockquote>"Good enough" is a function of who has to act on it, when, and what happens if they're wrong.</blockquote>
+
+        <p>That sentence sounds obvious until you try to write it down. Most of the forecasting literature treats the loss function as static — minimise RMSE, optimise log-likelihood, pick your poison. But in production, the loss function is a person. A person who's going to be in a meeting at 9am Monday and needs a number they can defend.</p>
+
+        <h2>Three margins worth caring about</h2>
+
+        <p>Through a year of iteration, three margins kept mattering more than the rest:</p>
+
+        <p><code>Latency</code> — how stale is the input by the time the output ships. We collapsed Eddy from a 6-hour batch to a 40-minute pipeline. Not because the math got faster; because we stopped reconciling things that didn't need reconciling.</p>
+
+        <p><code>Coverage</code> — the share of the things you're <em>supposed</em> to forecast that the system actually has an answer for. A 95% accurate forecast across 60% of the catalogue is worse than a 85% accurate one across 100%.</p>
+
+        <p><code>Trust decay</code> — how quickly users stop checking the model when it's quietly wrong. This one's the worst, because by the time you notice, the damage is already done. We started shipping a weekly "look at this graph, here's what surprised us" memo. It wasn't part of the spec. It probably mattered more than the model did.</p>
+
+        <h2>What I'd do differently</h2>
+
+        <p>I'd start with the memo. Build the artefact that the team would publish at the end of the week, then work backwards to the smallest model that could fill it in. Most forecasting projects build the model and then go looking for a reason it matters. That's the wrong direction.</p>
+
+        <p>I'd also keep the spreadsheet alive longer. The team's Friday ritual was the source of truth for two years after we shipped. It died eventually, but it died because the new system earned the right to replace it — not because we deprecated the old one out of pride.</p>
+
+        <p>If you take one thing from this: the forecast is the small part. The interface to the decision is the work.</p>
+      </div>
+    </article>
+  );
+}
+
+const PREV = { title:'Three months of training data, one DNF', date:'2026-03-08' };
+const NEXT = null;
+
+function Footer() {
+  return (
+    <footer style={{ borderTop:'1px solid var(--border)', padding:'48px 52px 96px', maxWidth:1100 }}>
+      <div className="sect-label reveal">CONTINUE</div>
+      <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+        {PREV ? (
+          <a href="article.html" className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>← Previous · {PREV.date}</div>
+            <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{PREV.title}</div>
+          </a>
+        ) : <div />}
+        {NEXT ? (
+          <a href="article.html" className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right' }}>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>Next · {NEXT.date} →</div>
+            <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{NEXT.title}</div>
+          </a>
+        ) : (
+          <a href="blog.html" className="hoverable" style={{ background:'transparent', border:'1px dashed var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right', display:'flex', flexDirection:'column', justifyContent:'center' }}>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:6 }}>End of feed →</div>
+            <div style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-md)', color:'var(--fg-muted)' }}>See all writing</div>
+          </a>
+        )}
+      </div>
+    </footer>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Terminal />
+      <SidebarNav />
+      <div className="page">
+        <Article />
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<script>
+const cursor = document.getElementById('cursor');
+let tx = -100, ty = -100, cx = -100, cy = -100;
+(function tick() {
+  cx += (tx - cx) * 0.4;
+  cy += (ty - cy) * 0.4;
+  cursor.style.left = cx + 'px';
+  cursor.style.top  = cy + 'px';
+  requestAnimationFrame(tick);
+})();
+document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+document.addEventListener('mouseover', e => {
+  cursor.classList.toggle('large', !!e.target.closest('a,button,.hoverable'));
+});
+
+const progress = document.getElementById('progress');
+const updateProgress = () => {
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  const p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+  progress.style.width = p + '%';
+};
+window.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+}, { threshold: 0.08 });
+const attachReveals = () => document.querySelectorAll('.reveal:not(.shown)').forEach(el => io.observe(el));
+attachReveals();
+setTimeout(attachReveals, 500);
+</script>
+</body>
+</html>
