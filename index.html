@@ -241,14 +241,14 @@ function Hero() {
           <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'clamp(13px,1.35vw,17px)', color:'var(--fg)', lineHeight:1.45, opacity:0.72, margin:0 }}>I build things, mostly with code, sometimes on a bike.</p>
         </div>
 
-        {/* Sport — SOFT CORAL */}
-        <div style={{ gridColumn:'3/4', gridRow:'1/2', background:'#ff8a7a', borderRadius:'var(--r-md)', padding:'18px 15px' }}>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'#0a1a2e', marginBottom:10 }}>TRIATHLON</div>
+        {/* Sport */}
+        <div style={{ gridColumn:'3/4', gridRow:'1/2', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'18px 15px' }}>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--accent)', marginBottom:10 }}>TRIATHLON</div>
           <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'3px 10px', marginBottom:10 }}>
-            {[['SWIM','1.9km'],['BIKE','90km'],['RUN','21.1km']].map(([d,v])=>(<React.Fragment key={d}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'rgba(13,31,53,0.62)' }}>{d}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'#0a1a2e' }}>{v}</span></React.Fragment>))}
+            {[['SWIM','1.9km'],['BIKE','90km'],['RUN','21.1km']].map(([d,v])=>(<React.Fragment key={d}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-muted)' }}>{d}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg)' }}>{v}</span></React.Fragment>))}
           </div>
-          <div style={{ height:2, background:'rgba(13,31,53,0.18)', borderRadius:1, marginBottom:7, overflow:'hidden' }}><div style={{ height:'100%', width:'62%', background:'#0a1a2e' }} /></div>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>70.3 · SEP 2026 · 12wk</div>
+          <div style={{ height:2, background:'var(--border)', borderRadius:1, marginBottom:7, overflow:'hidden' }}><div style={{ height:'100%', width:'62%', background:'var(--accent)' }} /></div>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>70.3 · SEP 2026 · 12wk</div>
         </div>
 
         {/* Stats — HOT CORAL */}
@@ -256,13 +256,13 @@ function Hero() {
           {[['47k','words written'],['3','products shipped'],['1','glorious DNF']].map(([n,l])=>(<div key={l} style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:7 }}><span style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:22, color:'#0d1f35', lineHeight:1 }}>{n}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>{l}</span></div>))}
         </div>
 
-        {/* Music — LIGHT SEAFOAM */}
-        <div style={{ gridColumn:'3/4', gridRow:'2/3', background:'#6adcc4', borderRadius:'var(--r-md)', padding:'18px 15px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'#0a1a2e' }}>PRODUCER · GUITARIST</div>
+        {/* Music */}
+        <div style={{ gridColumn:'3/4', gridRow:'2/3', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'18px 15px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>PRODUCER · GUITARIST</div>
           <div style={{ display:'flex', gap:2.5, alignItems:'flex-end', height:26, margin:'8px 0' }}>
-            {WB.map((h,i)=>(<div key={i} style={{ width:2.5, height:h, background:'#0a1a2e', opacity:0.78, transformOrigin:'bottom', animation:`wfbar ${0.3+(i%4)*0.09}s ease-in-out infinite alternate`, animationDelay:`${i*0.04}s` }} />))}
+            {WB.map((h,i)=>(<div key={i} style={{ width:2.5, height:h, background:'var(--accent)', opacity:0.58, transformOrigin:'bottom', animation:`wfbar ${0.3+(i%4)*0.09}s ease-in-out infinite alternate`, animationDelay:`${i*0.04}s` }} />))}
           </div>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>Recording EP · 2026</div>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>Recording EP · 2026</div>
         </div>
 
         {/* Location — SEAFOAM */}
@@ -443,13 +443,24 @@ function Now() {
     <section id="now" style={{ borderTop:'1px solid var(--border)' }}>
       <div className="sect-label reveal">06 / NOW</div>
       <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
-        {[['LOCATION','London','South west, mostly.'],['TRAINING','70.3 · Sep 2026','Week 8 of 20. Swim is holding.'],['READING','Ask me','Varies by week.']].map(([label,main,sub])=>(
-          <div key={label} style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 18px' }}>
-            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--accent)', marginBottom:10 }}>{label}</div>
-            <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-xl)', color:'var(--fg-bright)', marginBottom:6 }}>{main}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-sm)', color:'var(--fg-muted)', lineHeight:1.6 }}>{sub}</div>
-          </div>
-        ))}
+        {[
+          { label:'LOCATION', main:'London', sub:'South west, mostly.', tone:'dark' },
+          { label:'TRAINING', main:'70.3 · Sep 2026', sub:'Week 8 of 20. Swim is holding.', tone:'coral' },
+          { label:'READING', main:'Ask me', sub:'Varies by week.', tone:'seafoam' },
+        ].map(({label,main,sub,tone})=>{
+          const dark = tone === 'dark';
+          const bg = tone === 'coral' ? '#ff6b5b' : tone === 'seafoam' ? 'var(--accent)' : 'var(--bg-elevated)';
+          const labelColor = dark ? 'var(--accent)' : '#0a1a2e';
+          const mainColor = dark ? 'var(--fg-bright)' : '#0a1a2e';
+          const subColor = dark ? 'var(--fg-muted)' : 'rgba(13,31,53,0.65)';
+          return (
+            <div key={label} style={{ background:bg, border: dark ? '1px solid var(--border)' : 'none', borderRadius:'var(--r-md)', padding:'20px 18px' }}>
+              <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.12em', color:labelColor, marginBottom:10 }}>{label}</div>
+              <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-xl)', color:mainColor, marginBottom:6 }}>{main}</div>
+              <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-sm)', color:subColor, lineHeight:1.6 }}>{sub}</div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
