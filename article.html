@@ -30,9 +30,18 @@
       --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);--ease-out-quart:cubic-bezier(0.165,0.84,0.44,1);--ease-in-out:cubic-bezier(0.65,0,0.35,1);--ease-funky:cubic-bezier(0.34,1.56,0.64,1);
       --dur-quick:120ms;--dur-base:240ms;--dur-slow:480ms;--dur-reveal:720ms;--dur-tide:12s;
     }
+    body[data-theme="light"] {
+      --bg: #f5f1e8; --bg-elevated: #ece5d4; --bg-hover: #ddd6c4;
+      --fg: #1d3c5e; --fg-bright: #0a1a2e; --fg-muted: #4b5563; --fg-faint: #9ca3af;
+      --border: rgba(10,26,46,0.1); --border-strong: rgba(10,26,46,0.22);
+      --accent-soft: rgba(47,184,156,0.18);
+    }
+    body[data-theme="light"] .tide { background: radial-gradient(60% 50% at 18% 28%, rgba(62,207,178,0.1), transparent 60%), radial-gradient(70% 65% at 82% 72%, rgba(217,211,198,0.6), transparent 60%), var(--bg); }
+    body[data-theme="light"] .grain { opacity: 0.03; mix-blend-mode: multiply; }
+    body[data-theme="light"] .prose code { background: var(--bg-elevated); }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 300; line-height: var(--lh-body); cursor: none; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-weight: 300; line-height: var(--lh-body); cursor: none; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background var(--dur-base), color var(--dur-base); }
     .tide { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(60% 50% at 18% 28%, rgba(62,207,178,0.055), transparent 60%), radial-gradient(70% 65% at 82% 72%, rgba(22,50,79,0.55), transparent 60%), var(--bg); animation: tide var(--dur-tide) ease-in-out infinite alternate; }
     @keyframes tide { 0% { opacity: 1; } 100% { opacity: 0.85; } }
     .grain { position: fixed; inset: -50%; z-index: 1; pointer-events: none; background: url('assets/grain.svg') repeat; background-size: 200px 200px; opacity: 0.055; mix-blend-mode: overlay; animation: grainShift 0.8s steps(6) infinite; }
@@ -119,6 +128,50 @@ const TCMDS = {
   blog:['On forecasting under uncertainty     · 2026-04-12','Three months of training, one DNF   · 2026-03-08'],
   contact:["toby@redshaw.me"],
 };
+function ThemeToggle() {
+  const [theme, setTheme] = useState('dark');
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.body.dataset.theme = saved;
+    setTheme(saved);
+  }, []);
+  const toggle = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const next = theme === 'dark' ? 'light' : 'dark';
+    const nextBg = next === 'light' ? '#f5f1e8' : '#0d1f35';
+    const maxR = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:fixed;inset:0;z-index:9998;background:${nextBg};pointer-events:none;clip-path:circle(0px at ${x}px ${y}px);transition:clip-path 720ms cubic-bezier(0.65,0,0.35,1);`;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { overlay.style.clipPath = `circle(${maxR}px at ${x}px ${y}px)`; });
+    });
+    overlay.addEventListener('transitionend', () => {
+      document.body.dataset.theme = next;
+      setTheme(next);
+      localStorage.setItem('theme', next);
+      requestAnimationFrame(() => overlay.remove());
+    }, { once: true });
+  };
+  const isDark = theme === 'dark';
+  return (
+    <button onClick={toggle} aria-label="Toggle theme" className="hoverable" style={{ position:'fixed', top:18, right:74, zIndex:300, width:44, height:44, background:'rgba(13,31,53,0.78)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)', border:'1px solid var(--border-strong)', borderRadius:'var(--r-md)', cursor:'none', display:'flex', alignItems:'center', justifyContent:'center', padding:0, transition:'border-color var(--dur-base), background var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--accent)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border-strong)'}>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--fg-bright)" strokeWidth="1.4" strokeLinecap="round">
+        {isDark ? (
+          <g>
+            <circle cx="10" cy="10" r="3.4" fill="var(--accent)" stroke="var(--accent)" />
+            {[0,1,2,3,4,5,6,7].map(i => { const a = (i*Math.PI)/4; const x1 = 10 + Math.cos(a)*5.6; const y1 = 10 + Math.sin(a)*5.6; const x2 = 10 + Math.cos(a)*7.6; const y2 = 10 + Math.sin(a)*7.6; return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--fg-bright)" />; })}
+          </g>
+        ) : (
+          <path d="M 15 12.5 A 6.5 6.5 0 1 1 8 5 A 5 5 0 0 0 15 12.5 Z" fill="var(--accent)" stroke="var(--accent)" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 function FloatingMenu({ current }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -307,6 +360,7 @@ function App() {
     <>
       <Terminal />
       <SidebarNav />
+      <ThemeToggle />
       <FloatingMenu current="articles" />
       <div className="page">
         <Article />
