@@ -1,0 +1,73 @@
+{
+  "name": "Toby Redshaw.",
+  "tagline": "I build things, mostly with code, sometimes on a bike.",
+  "roles": ["ENGINEER", "ANALYST", "BUILDER", "TRIATHLETE", "PRODUCER"],
+  "hero": {
+    "triathlon": {
+      "legs": [
+        ["SWIM", "1.9km"],
+        ["BIKE", "90km"],
+        ["RUN", "21.1km"]
+      ],
+      "progress": 62,
+      "raceLabel": "70.3 · SEP 2026 · 12wk"
+    },
+    "stats": [
+      ["47k", "words written"],
+      ["3", "products shipped"],
+      ["1", "glorious DNF"]
+    ],
+    "music": {
+      "label": "PRODUCER · GUITARIST",
+      "sub": "Recording EP · 2026"
+    },
+    "location": {
+      "city": "London",
+      "schoolLine1": "MSc Economics",
+      "schoolLine2": "Imperial College"
+    },
+    "available": {
+      "label": "OPEN TO",
+      "headline": "New work.",
+      "cta": "toby@redshaw.me →"
+    }
+  },
+  "about": {
+    "paragraphs": [
+      "Trained as an economist. Mostly write Python now. Spent the last year between London and a 70.3 in May.",
+      "The work sits at the edge of analysis and building — not quite data science, not quite engineering, but usually the thing that makes the other things possible. I've shipped forecasting tools, platform infrastructure, and the occasional spreadsheet that outlasted the project."
+    ],
+    "pullQuote": "The catch was making spinout paperwork legible to scientists.",
+    "cvHref": "/assets/cv.pdf",
+    "currently": [
+      { "label": "Location", "value": "London" },
+      { "label": "Training", "value": "70.3, Sep 2026" },
+      { "label": "Building", "value": "Lab2Launch" }
+    ]
+  },
+  "experience": [
+    { "role": "Senior Business Analyst", "co": "Accenture", "years": "2023 — now", "current": true },
+    { "role": "Analyst", "co": "The Co-operative Group", "years": "2021 — 2023", "current": false },
+    { "role": "Economist", "co": "HMRC", "years": "2019 — 2021", "current": false }
+  ],
+  "now": [
+    { "label": "LOCATION", "main": "London", "sub": "South west, mostly.", "tone": "dark" },
+    { "label": "TRAINING", "main": "70.3 · Sep 2026", "sub": "Week 8 of 20. Swim is holding.", "tone": "coral" },
+    { "label": "READING", "main": "Ask me", "sub": "Varies by week.", "tone": "seafoam" }
+  ],
+  "contact": {
+    "headline": "Email's the fastest.",
+    "blurb": "Based in London. Available for new work. Response time is usually same day.",
+    "footer": "© 2026 Toby Redshaw",
+    "links": [
+      { "label": "toby@redshaw.me", "href": "mailto:toby@redshaw.me" },
+      { "label": "LINKEDIN", "href": "https://linkedin.com/in/tobyredshaw" },
+      { "label": "GITHUB", "href": "https://github.com/tredshaw" }
+    ]
+  },
+  "blog": {
+    "title": "Notes & essays.",
+    "intro": "Mostly working notes. Some essays. Occasional race reports. Updated when I have something to say, not on a schedule.",
+    "tags": ["All", "Forecasting", "Economics", "Sport", "Data", "Work", "Process", "Product", "Lab2Launch"]
+  }
+}

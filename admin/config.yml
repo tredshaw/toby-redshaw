@@ -1,0 +1,152 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "assets/uploads"
+
+publish_mode: simple
+
+collections:
+  - name: "site"
+    label: "Site Copy"
+    delete: false
+    editor: { preview: false }
+    files:
+      - file: "content/site.json"
+        label: "All page copy"
+        name: "site"
+        format: "json"
+        fields:
+          - { label: "Display name", name: "name", widget: "string" }
+          - { label: "Tagline (hero)", name: "tagline", widget: "string" }
+          - { label: "Hero role chips", name: "roles", widget: "list", default: ["ENGINEER","ANALYST","BUILDER","TRIATHLETE","PRODUCER"] }
+          - label: "Hero tiles"
+            name: "hero"
+            widget: "object"
+            fields:
+              - label: "Triathlon tile"
+                name: "triathlon"
+                widget: "object"
+                fields:
+                  - label: "Legs (label, distance pairs)"
+                    name: "legs"
+                    widget: "list"
+                    field: { label: "Leg", name: "leg", widget: "list", summary: "{{fields.0}}: {{fields.1}}" }
+                  - { label: "Progress (0-100)", name: "progress", widget: "number", value_type: "int", min: 0, max: 100 }
+                  - { label: "Race label", name: "raceLabel", widget: "string" }
+              - label: "Stats tile (number, label pairs)"
+                name: "stats"
+                widget: "list"
+                field: { label: "Stat", name: "stat", widget: "list", summary: "{{fields.0}} {{fields.1}}" }
+              - label: "Music tile"
+                name: "music"
+                widget: "object"
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "Sub", name: "sub", widget: "string" }
+              - label: "Location tile"
+                name: "location"
+                widget: "object"
+                fields:
+                  - { label: "City", name: "city", widget: "string" }
+                  - { label: "School line 1", name: "schoolLine1", widget: "string" }
+                  - { label: "School line 2", name: "schoolLine2", widget: "string" }
+              - label: "Available tile"
+                name: "available"
+                widget: "object"
+                fields:
+                  - { label: "Eyebrow label", name: "label", widget: "string" }
+                  - { label: "Headline", name: "headline", widget: "string" }
+                  - { label: "CTA text", name: "cta", widget: "string" }
+          - label: "About section"
+            name: "about"
+            widget: "object"
+            fields:
+              - { label: "Paragraphs", name: "paragraphs", widget: "list", field: { label: "Paragraph", name: "para", widget: "text" } }
+              - { label: "Pull quote", name: "pullQuote", widget: "text" }
+              - { label: "CV download href", name: "cvHref", widget: "string", required: false, default: "/assets/cv.pdf" }
+              - label: "Currently table"
+                name: "currently"
+                widget: "list"
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "Value", name: "value", widget: "string" }
+          - label: "Experience timeline"
+            name: "experience"
+            widget: "list"
+            fields:
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Company", name: "co", widget: "string" }
+              - { label: "Years", name: "years", widget: "string" }
+              - { label: "Current?", name: "current", widget: "boolean", default: false }
+          - label: "Now section tiles"
+            name: "now"
+            widget: "list"
+            fields:
+              - { label: "Eyebrow label", name: "label", widget: "string" }
+              - { label: "Headline", name: "main", widget: "string" }
+              - { label: "Sub", name: "sub", widget: "string" }
+              - { label: "Colour tone", name: "tone", widget: "select", options: ["dark", "coral", "seafoam"], default: "dark" }
+          - label: "Contact section"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Headline", name: "headline", widget: "string" }
+              - { label: "Blurb", name: "blurb", widget: "text" }
+              - { label: "Footer line", name: "footer", widget: "string" }
+              - label: "Links"
+                name: "links"
+                widget: "list"
+                fields:
+                  - { label: "Label", name: "label", widget: "string" }
+                  - { label: "URL", name: "href", widget: "string" }
+          - label: "Blog page intro"
+            name: "blog"
+            widget: "object"
+            fields:
+              - { label: "Title (last word becomes coral italic)", name: "title", widget: "string" }
+              - { label: "Intro paragraph", name: "intro", widget: "text" }
+              - { label: "Tag filter chips", name: "tags", widget: "list", default: ["All"] }
+
+  - name: "projects"
+    label: "Projects"
+    editor: { preview: false }
+    files:
+      - file: "content/projects.json"
+        label: "Projects list"
+        name: "projects"
+        format: "json"
+        fields:
+          - label: "Projects"
+            name: "projects"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Status line", name: "status", widget: "string" }
+              - { label: "Description", name: "desc", widget: "text" }
+              - { label: "Tags", name: "tags", widget: "list", field: { label: "Tag", name: "tag", widget: "string" } }
+              - { label: "Hero card (large 2-row)?", name: "hero", widget: "boolean", default: false }
+
+  - name: "posts"
+    label: "Blog Posts"
+    editor: { preview: false }
+    files:
+      - file: "content/posts.json"
+        label: "All posts"
+        name: "posts"
+        format: "json"
+        fields:
+          - label: "Posts"
+            name: "posts"
+            widget: "list"
+            summary: "{{fields.date}} — {{fields.title}}"
+            fields:
+              - { label: "Slug (url-friendly id)", name: "slug", widget: "string", hint: "lowercase-with-hyphens; used in the article URL" }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Date", name: "date", widget: "string", hint: "YYYY-MM-DD" }
+              - { label: "Subtitle / one-liner", name: "sub", widget: "text" }
+              - { label: "Tags", name: "tags", widget: "list", field: { label: "Tag", name: "tag", widget: "string" } }
+              - { label: "Read time", name: "read", widget: "string", default: "5 min" }
+              - { label: "Featured (hot-coral card on /blog)?", name: "featured", widget: "boolean", default: false }
+              - { label: "Body (markdown)", name: "body", widget: "markdown" }

@@ -6,6 +6,7 @@
   <title>Writing — Toby Redshaw</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
   <style>
     :root {
       --navy-900:#0a1a2e;--navy-800:#0d1f35;--navy-700:#112844;--navy-600:#16324f;--navy-500:#1d3c5e;
@@ -303,35 +304,31 @@ function Terminal() {
   );
 }
 
-const POSTS = [
-  { slug:'forecasting-under-uncertainty', date:'2026-04-12', title:'On forecasting under uncertainty', sub:'Models, margins of error, and what "good enough" means in practice.', tags:['Forecasting','Economics'], read:'8 min', featured:true },
-  { slug:'three-months-one-dnf', date:'2026-03-08', title:'Three months of training data, one DNF', sub:'What the numbers said, what I ignored, and what I would do differently.', tags:['Sport','Data'], read:'6 min' },
-  { slug:'what-makes-a-good-brief', date:'2026-01-22', title:'What makes a good brief?', sub:'A brief is a design artefact. Most people treat it as a formality.', tags:['Work','Process'], read:'5 min' },
-  { slug:'spinout-paperwork', date:'2025-11-04', title:'Spinout paperwork, for scientists', sub:'Notes from building Lab2Launch — what the legal stack actually looks like.', tags:['Lab2Launch','Product'], read:'7 min' },
-  { slug:'six-hours-to-forty-minutes', date:'2025-08-19', title:'Six hours to forty minutes', sub:'How a single forecasting workflow at Eddy collapsed an entire weekly ritual.', tags:['Work','Data'], read:'4 min' },
-];
-const TAGS = ['All','Forecasting','Economics','Sport','Data','Work','Process','Product','Lab2Launch'];
-
-function Hero() {
+function Hero({ blog }) {
+  // Split title at first space to colour the second word coral, falling back if single word
+  const parts = blog.title.split(' ');
+  const head = parts.slice(0, -1).join(' ');
+  const tail = parts[parts.length - 1];
   return (
     <section id="hero" style={{ minHeight:'72vh', display:'flex', flexDirection:'column', justifyContent:'flex-end' }}>
       <div className="sect-label reveal">WRITING · INDEX</div>
       <h1 className="reveal d1" style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'clamp(56px,8vw,128px)', lineHeight:0.94, letterSpacing:'-0.025em', color:'var(--fg-bright)', marginBottom:24 }}>
-        Notes &amp; <em style={{ fontStyle:'italic', color:'var(--secondary-accent)' }}>essays.</em>
+        {head ? <>{head} <em style={{ fontStyle:'italic', color:'var(--secondary-accent)' }}>{tail}</em></> : <em style={{ fontStyle:'italic', color:'var(--secondary-accent)' }}>{tail}</em>}
       </h1>
       <p className="reveal d2" style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-xl)', color:'var(--fg-muted)', maxWidth:640, lineHeight:1.5 }}>
-        Mostly working notes. Some essays. Occasional race reports. Updated when I have something to say, not on a schedule.
+        {blog.intro}
       </p>
     </section>
   );
 }
 
-function Featured() {
-  const p = POSTS.find(x => x.featured);
+function Featured({ posts }) {
+  const p = posts.find(x => x.featured) || posts[0];
+  if (!p) return null;
   return (
     <section id="featured">
       <div className="sect-label reveal">FEATURED</div>
-      <a href="article.html" className="reveal d1 hoverable" style={{ display:'block', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'42px 38px', textDecoration:'none', position:'relative', overflow:'hidden' }}>
+      <a href={`article.html?slug=${p.slug}`} className="reveal d1 hoverable" style={{ display:'block', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'42px 38px', textDecoration:'none', position:'relative', overflow:'hidden' }}>
         <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.14em', color:'rgba(13,31,53,0.65)', marginBottom:24 }}>{p.date} · {p.read} read</div>
         <h2 style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'clamp(38px,4.6vw,68px)', lineHeight:1.02, letterSpacing:'-0.02em', color:'#0a1a2e', marginBottom:22, maxWidth:780 }}>{p.title}</h2>
         <p style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-md)', lineHeight:1.6, color:'rgba(13,31,53,0.78)', maxWidth:600, marginBottom:28 }}>{p.sub}</p>
@@ -346,7 +343,7 @@ function Featured() {
   );
 }
 
-function Index() {
+function Index({ posts, tags }) {
   const [activeTag, setActiveTag] = useState('All');
   const [hovDate, setHovDate] = useState({});
   const timers = useRef({});
@@ -361,12 +358,12 @@ function Index() {
     }, 38);
   };
   const stopType = (i) => { clearInterval(timers.current[i]); setHovDate(h => ({ ...h, [i]: undefined })); };
-  const filtered = POSTS.filter(p => !p.featured && (activeTag==='All' || p.tags.includes(activeTag)));
+  const filtered = posts.filter(p => !p.featured && (activeTag==='All' || (p.tags||[]).includes(activeTag)));
   return (
     <section id="index" style={{ borderTop:'1px solid var(--border)' }}>
       <div className="sect-label reveal">ALL WRITING</div>
       <div className="reveal d1" style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:32 }}>
-        {TAGS.map(t => {
+        {tags.map(t => {
           const on = t === activeTag;
           return (
             <button key={t} onClick={()=>setActiveTag(t)} className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.12em', padding:'6px 12px', borderRadius:'var(--r-pill)', border:`1px solid ${on?'var(--accent)':'var(--border)'}`, background: on?'rgba(62,207,178,0.12)':'transparent', color: on?'var(--accent)':'var(--fg-muted)', cursor:'none', transition:'all var(--dur-base)' }}>{t}</button>
@@ -378,13 +375,13 @@ function Index() {
           <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'var(--fg-faint)', padding:'40px 0', letterSpacing:'0.1em', textTransform:'uppercase' }}>No posts under "{activeTag}" yet.</div>
         )}
         {filtered.map((p,i)=>(
-          <a key={p.slug} href="article.html" className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
+          <a key={p.slug} href={`article.html?slug=${p.slug}`} className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
             <span className="post-date">{hovDate[i] !== undefined ? hovDate[i] + (hovDate[i]?.length < p.date.length ? '▌' : '') : p.date}</span>
             <div style={{ flex:1 }}>
               <div className="post-title">{p.title}</div>
               <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-sm)', color:'var(--fg-muted)', marginTop:6, lineHeight:1.6, maxWidth:620 }}>{p.sub}</div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:12 }}>
-                {p.tags.map(t=>(<span key={t} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.1em', padding:'2px 8px', borderRadius:'var(--r-sm)', border:'1px solid var(--border)', color:'var(--fg-muted)' }}>{t}</span>))}
+                {(p.tags||[]).map(t=>(<span key={t} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.1em', padding:'2px 8px', borderRadius:'var(--r-sm)', border:'1px solid var(--border)', color:'var(--fg-muted)' }}>{t}</span>))}
               </div>
             </div>
             <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:'var(--fg-faint)', alignSelf:'flex-start', marginLeft:16, letterSpacing:'0.08em' }}>{p.read}</span>
@@ -400,6 +397,16 @@ function Index() {
 }
 
 function App() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    Promise.all([
+      fetch('content/site.json').then(r => r.json()),
+      fetch('content/posts.json').then(r => r.json()),
+    ]).then(([site, posts]) => {
+      setData({ site, posts: posts.posts });
+    }).catch(err => console.error('Content load failed:', err));
+  }, []);
+  if (!data) return <div style={{ position:'fixed', inset:0, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase' }}>loading…</div>;
   return (
     <>
       <Terminal />
@@ -407,9 +414,9 @@ function App() {
       <ThemeToggle />
       <FloatingMenu current="articles" />
       <div className="page">
-        <Hero />
-        <Featured />
-        <Index />
+        <Hero blog={data.site.blog} />
+        <Featured posts={data.posts} />
+        <Index posts={data.posts} tags={data.site.blog.tags} />
       </div>
     </>
   );

@@ -6,6 +6,7 @@
   <title>Toby Redshaw</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
   <style>
     :root {
       --navy-900:#0a1a2e;--navy-800:#0d1f35;--navy-700:#112844;--navy-600:#16324f;--navy-500:#1d3c5e;
@@ -319,11 +320,12 @@ function Terminal() {
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
-function Hero() {
-  const ROLES=['ENGINEER','ANALYST','BUILDER','TRIATHLETE','PRODUCER'];
-  const RC=[{t:'#3ecfb2',b:'rgba(62,207,178,0.1)',br:'#3ecfb2'},{t:'#ff6b5b',b:'rgba(255,107,91,0.1)',br:'#ff6b5b'},{t:'#f0ebe2',b:'rgba(240,235,226,0.07)',br:'rgba(240,235,226,0.28)'},{t:'#6adcc4',b:'rgba(106,220,196,0.1)',br:'#6adcc4'},{t:'#ff8a7a',b:'rgba(255,138,122,0.1)',br:'#ff8a7a'}];
+function Hero({ site }) {
+  const ROLES = site.roles;
+  const RC_BASE=[{t:'#3ecfb2',b:'rgba(62,207,178,0.1)',br:'#3ecfb2'},{t:'#ff6b5b',b:'rgba(255,107,91,0.1)',br:'#ff6b5b'},{t:'#f0ebe2',b:'rgba(240,235,226,0.07)',br:'rgba(240,235,226,0.28)'},{t:'#6adcc4',b:'rgba(106,220,196,0.1)',br:'#6adcc4'},{t:'#ff8a7a',b:'rgba(255,138,122,0.1)',br:'#ff8a7a'}];
+  const RC = ROLES.map((_,i) => RC_BASE[i % RC_BASE.length]);
   const WB=[10,16,7,20,13,18,6,22,11,17,8,14,9,19];
-  const FN='Toby Redshaw.';
+  const FN = site.name;
   const [role,setRole]=useState(0);
   const [name,setName]=useState(FN);
   const [time,setTime]=useState('');
@@ -355,54 +357,54 @@ function Hero() {
 
         {/* Tagline */}
         <div style={{ gridColumn:'2/3', gridRow:'1/2', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 18px', display:'flex', alignItems:'center' }}>
-          <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'clamp(13px,1.35vw,17px)', color:'var(--fg)', lineHeight:1.45, opacity:0.72, margin:0 }}>I build things, mostly with code, sometimes on a bike.</p>
+          <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'clamp(13px,1.35vw,17px)', color:'var(--fg)', lineHeight:1.45, opacity:0.72, margin:0 }}>{site.tagline}</p>
         </div>
 
         {/* Sport */}
         <div style={{ gridColumn:'3/4', gridRow:'1/2', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'18px 15px' }}>
           <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--accent)', marginBottom:10 }}>TRIATHLON</div>
           <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'3px 10px', marginBottom:10 }}>
-            {[['SWIM','1.9km'],['BIKE','90km'],['RUN','21.1km']].map(([d,v])=>(<React.Fragment key={d}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-muted)' }}>{d}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg)' }}>{v}</span></React.Fragment>))}
+            {site.hero.triathlon.legs.map(([d,v])=>(<React.Fragment key={d}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-muted)' }}>{d}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg)' }}>{v}</span></React.Fragment>))}
           </div>
-          <div style={{ height:2, background:'var(--border)', borderRadius:1, marginBottom:7, overflow:'hidden' }}><div style={{ height:'100%', width:'62%', background:'var(--accent)' }} /></div>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>70.3 · SEP 2026 · 12wk</div>
+          <div style={{ height:2, background:'var(--border)', borderRadius:1, marginBottom:7, overflow:'hidden' }}><div style={{ height:'100%', width:`${site.hero.triathlon.progress}%`, background:'var(--accent)' }} /></div>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{site.hero.triathlon.raceLabel}</div>
         </div>
 
         {/* Stats — HOT CORAL */}
         <div style={{ gridColumn:'2/3', gridRow:'2/3', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'18px 15px' }}>
-          {[['47k','words written'],['3','products shipped'],['1','glorious DNF']].map(([n,l])=>(<div key={l} style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:7 }}><span style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:22, color:'#0d1f35', lineHeight:1 }}>{n}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>{l}</span></div>))}
+          {site.hero.stats.map(([n,l])=>(<div key={l} style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:7 }}><span style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:22, color:'#0d1f35', lineHeight:1 }}>{n}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>{l}</span></div>))}
         </div>
 
         {/* Music */}
         <div style={{ gridColumn:'3/4', gridRow:'2/3', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'18px 15px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>PRODUCER · GUITARIST</div>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>{site.hero.music.label}</div>
           <div style={{ display:'flex', gap:2.5, alignItems:'flex-end', height:26, margin:'8px 0' }}>
             {WB.map((h,i)=>(<div key={i} style={{ width:2.5, height:h, background:'var(--accent)', opacity:0.58, transformOrigin:'bottom', animation:`wfbar ${0.3+(i%4)*0.09}s ease-in-out infinite alternate`, animationDelay:`${i*0.04}s` }} />))}
           </div>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>Recording EP · 2026</div>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{site.hero.music.sub}</div>
         </div>
 
         {/* Location — SEAFOAM */}
         <div style={{ gridColumn:'2/3', gridRow:'3/4', background:'var(--accent)', borderRadius:'var(--r-md)', padding:'18px 15px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
           <div style={{ display:'flex', alignItems:'center', gap:7 }}>
             <div style={{ width:7, height:7, borderRadius:'50%', background:'#0a1a2e', opacity:0.4, animation:'pulse 2.2s ease-in-out infinite' }} />
-            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, color:'#0a1a2e', letterSpacing:'0.11em' }}>London · {time}</span>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, color:'#0a1a2e', letterSpacing:'0.11em' }}>{site.hero.location.city} · {time}</span>
           </div>
-          <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:11, color:'rgba(10,26,46,0.65)', lineHeight:1.65 }}>MSc Economics<br/>Imperial College</div>
+          <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:11, color:'rgba(10,26,46,0.65)', lineHeight:1.65 }}>{site.hero.location.schoolLine1}<br/>{site.hero.location.schoolLine2}</div>
         </div>
 
         {/* Available */}
         <div style={{ gridColumn:'3/4', gridRow:'3/4', background:'rgba(62,207,178,0.1)', border:'1px solid rgba(62,207,178,0.28)', borderRadius:'var(--r-md)', padding:'18px 15px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>OPEN TO</div>
-          <div style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:19, color:'var(--fg-bright)', lineHeight:1.1 }}>New work.</div>
-          <a href="#contact" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, color:'var(--accent)', textDecoration:'none' }}>toby@redshaw.me →</a>
+          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>{site.hero.available.label}</div>
+          <div style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:19, color:'var(--fg-bright)', lineHeight:1.1 }}>{site.hero.available.headline}</div>
+          <a href="#contact" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, color:'var(--accent)', textDecoration:'none' }}>{site.hero.available.cta}</a>
         </div>
       </div>
 
       {/* Ticker */}
       <div className="reveal d2" style={{ overflow:'hidden', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)', padding:'9px 0', marginTop:8 }}>
         <div style={{ display:'inline-block', animation:'ticker 18s linear infinite', whiteSpace:'nowrap' }}>
-          {[0,1,2].map(k=>(<span key={k} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', marginRight:52 }}>{['ENGINEER','·','ANALYST','·','BUILDER','·','TRIATHLETE','·','PRODUCER','·'].map((item,i)=>(<span key={i} style={{ color:item==='·'?'var(--accent)':'var(--fg-muted)', marginRight:10 }}>{item}</span>))}</span>))}
+          {[0,1,2].map(k=>{ const tickerItems = ROLES.flatMap(r => [r, '·']); return (<span key={k} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', marginRight:52 }}>{tickerItems.map((item,i)=>(<span key={i} style={{ color:item==='·'?'var(--accent)':'var(--fg-muted)', marginRight:10 }}>{item}</span>))}</span>); })}
         </div>
       </div>
     </section>
@@ -410,36 +412,34 @@ function Hero() {
 }
 
 // ── About ─────────────────────────────────────────────────────────────────────
-function About() {
+function About({ site }) {
+  const sayHi = site.contact.links[0];
   return (
     <section id="about" style={{ borderTop:'1px solid var(--border)' }}>
       <div className="sect-label reveal">02 / ABOUT</div>
       <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'7fr 5fr', gap:48 }}>
         <div>
-          <p style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-md)', lineHeight:'var(--lh-body)', color:'var(--fg)', marginBottom:20 }}>
-            Trained as an economist. Mostly write Python now. Spent the last year between London and a 70.3 in May.
-          </p>
-          <p style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-md)', lineHeight:'var(--lh-body)', color:'var(--fg)', marginBottom:20, opacity:0.8 }}>
-            The work sits at the edge of analysis and building — not quite data science, not quite engineering, but usually the thing that makes the other things possible. I've shipped forecasting tools, platform infrastructure, and the occasional spreadsheet that outlasted the project.
-          </p>
+          {site.about.paragraphs.map((para, i) => (
+            <p key={i} style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-md)', lineHeight:'var(--lh-body)', color:'var(--fg)', marginBottom:20, opacity: i===0 ? 1 : 0.8 }}>{para}</p>
+          ))}
           <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-xl)', lineHeight:1.35, color:'var(--secondary-accent)', marginBottom:24 }}>
-            "The catch was making spinout paperwork legible to scientists."
+            "{site.about.pullQuote}"
           </p>
-          <a href="/assets/cv.pdf" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'9px 16px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>Download CV →</a>
+          <a href={site.about.cvHref} className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'9px 16px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>Download CV →</a>
         </div>
         <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
           <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
             <div style={{ width:120, height:120, flexShrink:0, borderRadius:'var(--r-md)', overflow:'hidden', border:'1px solid var(--border)' }}>
-              <img src="assets/portrait.jpg" alt="Toby Redshaw" style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }} />
+              <img src="assets/portrait.jpg" alt={site.name} style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }} />
             </div>
             <div style={{ flex:1, background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'14px 16px', minHeight:120, display:'flex', flexDirection:'column', justifyContent:'center' }}>
               <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'rgba(13,31,53,0.65)', marginBottom:6 }}>Say hi</div>
-              <a href="#contact" className="hoverable" style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:20, color:'#0a1a2e', textDecoration:'none', lineHeight:1.15 }}>toby@<br/>redshaw.me →</a>
+              <a href={sayHi.href} className="hoverable" style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:20, color:'#0a1a2e', textDecoration:'none', lineHeight:1.15 }}>{sayHi.label} →</a>
             </div>
           </div>
           <div style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'16px 18px' }}>
             <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--accent)', marginBottom:10 }}>Currently</div>
-            {(() => { const rows = [['Location','London'],['Training','70.3, Sep 2026'],['Building','Lab2Launch']]; return rows.map(([k,v],i)=>(<div key={k} style={{ display:'flex', justifyContent:'space-between', padding:'6px 0', borderBottom: i===rows.length-1 ? 'none' : '1px solid var(--border)' }}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{k}</span><span style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:13, color:'var(--fg)' }}>{v}</span></div>)); })()}
+            {site.about.currently.map((row,i)=>(<div key={row.label} style={{ display:'flex', justifyContent:'space-between', padding:'6px 0', borderBottom: i===site.about.currently.length-1 ? 'none' : '1px solid var(--border)' }}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{row.label}</span><span style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:13, color:'var(--fg)' }}>{row.value}</span></div>))}
           </div>
         </div>
       </div>
@@ -448,12 +448,7 @@ function About() {
 }
 
 // ── Projects ──────────────────────────────────────────────────────────────────
-function Projects() {
-  const projects = [
-    { title:'Lab2Launch', status:'IN PROGRESS · 2026', desc:'A platform that turns university research into companies. The catch was making spinout paperwork legible to scientists.', tags:['Python','React','Product'], hero:true },
-    { title:'Eddy', status:'SHIPPED · 2024', desc:'Forecasting tool that cut a six-hour weekly report to forty minutes.', tags:['Python','Data'], hero:false },
-    { title:'MIA Dissertation', status:'RESEARCH · 2023', desc:'On forecasting under uncertainty. What "good enough" means when the margins matter.', tags:['Research','Economics'], hero:false },
-  ];
+function Projects({ projects }) {
   return (
     <section id="projects" style={{ borderTop:'1px solid var(--border)' }}>
       <div className="sect-label reveal">03 / PROJECTS</div>
@@ -490,12 +485,7 @@ function Projects() {
 }
 
 // ── Experience ────────────────────────────────────────────────────────────────
-function Experience() {
-  const jobs = [
-    { role:'Senior Business Analyst', co:'Accenture', years:'2023 — now', current:true },
-    { role:'Analyst', co:'The Co-operative Group', years:'2021 — 2023', current:false },
-    { role:'Economist', co:'HMRC', years:'2019 — 2021', current:false },
-  ];
+function Experience({ jobs }) {
   return (
     <section id="experience" style={{ borderTop:'1px solid var(--border)' }}>
       <div className="sect-label reveal">04 / EXPERIENCE</div>
@@ -516,12 +506,7 @@ function Experience() {
 }
 
 // ── Writing ───────────────────────────────────────────────────────────────────
-function Writing() {
-  const posts = [
-    { date:'2026-04-12', title:'On forecasting under uncertainty', sub:'Models, margins of error, and what "good enough" means in practice.' },
-    { date:'2026-03-08', title:'Three months of training data, one DNF', sub:'What the numbers said, what I ignored, and what I would do differently.' },
-    { date:'2026-01-22', title:'What makes a good brief?', sub:'A brief is a design artefact. Most people treat it as a formality.' },
-  ];
+function Writing({ posts }) {
   const [hovDate, setHovDate] = useState({});
   const timers = useRef({});
   const startType = (i, date) => {
@@ -540,7 +525,7 @@ function Writing() {
       <div className="sect-label reveal">05 / WRITING</div>
       <div className="reveal d1">
         {posts.map((p,i)=>(
-          <a key={i} href="blog.html" className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
+          <a key={i} href={`article.html?slug=${p.slug}`} className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
             <span className="post-date">{hovDate[i] !== undefined ? hovDate[i] + (hovDate[i]?.length < p.date.length ? '▌' : '') : p.date}</span>
             <div style={{ flex:1 }}>
               <div className="post-title">{p.title}</div>
@@ -559,16 +544,12 @@ function Writing() {
 }
 
 // ── Now ───────────────────────────────────────────────────────────────────────
-function Now() {
+function Now({ items }) {
   return (
     <section id="now" style={{ borderTop:'1px solid var(--border)' }}>
       <div className="sect-label reveal">06 / NOW</div>
       <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
-        {[
-          { label:'LOCATION', main:'London', sub:'South west, mostly.', tone:'dark' },
-          { label:'TRAINING', main:'70.3 · Sep 2026', sub:'Week 8 of 20. Swim is holding.', tone:'coral' },
-          { label:'READING', main:'Ask me', sub:'Varies by week.', tone:'seafoam' },
-        ].map(({label,main,sub,tone})=>{
+        {items.map(({label,main,sub,tone})=>{
           const dark = tone === 'dark';
           const bg = tone === 'coral' ? '#ff6b5b' : tone === 'seafoam' ? 'var(--accent)' : 'var(--bg-elevated)';
           const labelColor = dark ? 'var(--accent)' : '#0a1a2e';
@@ -588,21 +569,16 @@ function Now() {
 }
 
 // ── Contact ───────────────────────────────────────────────────────────────────
-function Contact() {
-  const links = [
-    { label:'toby@redshaw.me', href:'mailto:toby@redshaw.me' },
-    { label:'LINKEDIN', href:'https://linkedin.com/in/tobyredshaw' },
-    { label:'GITHUB', href:'https://github.com/tobyredshaw' },
-  ];
+function Contact({ contact }) {
   return (
     <section id="contact" style={{ borderTop:'1px solid var(--border)', paddingBottom:120 }}>
       <div className="sect-label reveal">07 / CONTACT</div>
       <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'7fr 5fr', gap:48 }}>
         <div>
           <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'clamp(28px,3.5vw,52px)', lineHeight:1.1, letterSpacing:'-0.015em', color:'var(--fg-bright)', marginBottom:40 }}>
-            Email's the fastest.
+            {contact.headline}
           </p>
-          {links.map(l=>(
+          {contact.links.map(l=>(
             <a key={l.label} href={l.href} className="contact-row hoverable" style={{ textDecoration:'none', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
               <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)' }}>{l.label}</span>
               <span className="c-arrow">→</span>
@@ -611,10 +587,10 @@ function Contact() {
         </div>
         <div style={{ display:'flex', flexDirection:'column', justifyContent:'flex-end' }}>
           <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-sm)', color:'var(--fg-muted)', lineHeight:'var(--lh-prose)' }}>
-            Based in London. Available for new work. Response time is usually same day.
+            {contact.blurb}
           </div>
           <div style={{ marginTop:16, fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-faint)', letterSpacing:'0.1em', textTransform:'uppercase' }}>
-            © 2026 Toby Redshaw
+            {contact.footer}
           </div>
         </div>
       </div>
@@ -624,6 +600,17 @@ function Contact() {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 function App() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    Promise.all([
+      fetch('content/site.json').then(r => r.json()),
+      fetch('content/projects.json').then(r => r.json()),
+      fetch('content/posts.json').then(r => r.json()),
+    ]).then(([site, projects, posts]) => {
+      setData({ site, projects: projects.projects, posts: posts.posts });
+    }).catch(err => console.error('Content load failed:', err));
+  }, []);
+  if (!data) return <div style={{ position:'fixed', inset:0, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase' }}>loading…</div>;
   return (
     <>
       <Terminal />
@@ -631,13 +618,13 @@ function App() {
       <ThemeToggle />
       <FloatingMenu current="home" />
       <div className="page">
-        <Hero />
-        <About />
-        <Projects />
-        <Experience />
-        <Writing />
-        <Now />
-        <Contact />
+        <Hero site={data.site} />
+        <About site={data.site} />
+        <Projects projects={data.projects} />
+        <Experience jobs={data.site.experience} />
+        <Writing posts={data.posts.slice(0,3)} />
+        <Now items={data.site.now} />
+        <Contact contact={data.site.contact} />
       </div>
     </>
   );

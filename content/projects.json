@@ -1,0 +1,25 @@
+{
+  "projects": [
+    {
+      "title": "Lab2Launch",
+      "status": "IN PROGRESS · 2026",
+      "desc": "A platform that turns university research into companies. The catch was making spinout paperwork legible to scientists.",
+      "tags": ["Python", "React", "Product"],
+      "hero": true
+    },
+    {
+      "title": "Eddy",
+      "status": "SHIPPED · 2024",
+      "desc": "Forecasting tool that cut a six-hour weekly report to forty minutes.",
+      "tags": ["Python", "Data"],
+      "hero": false
+    },
+    {
+      "title": "MIA Dissertation",
+      "status": "RESEARCH · 2023",
+      "desc": "On forecasting under uncertainty. What \"good enough\" means when the margins matter.",
+      "tags": ["Research", "Economics"],
+      "hero": false
+    }
+  ]
+}

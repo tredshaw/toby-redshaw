@@ -6,6 +6,7 @@
   <title>On forecasting under uncertainty — Toby Redshaw</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
   <style>
     :root {
       --navy-900:#0a1a2e;--navy-800:#0d1f35;--navy-700:#112844;--navy-600:#16324f;--navy-500:#1d3c5e;
@@ -84,6 +85,7 @@
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
@@ -284,74 +286,48 @@ function Terminal() {
   );
 }
 
-function Article() {
+function Article({ post }) {
+  const html = post && post.body ? marked.parse(post.body) : '';
+  const primaryTag = post && post.tags && post.tags[0];
   return (
     <article className="article-wrap">
       <div className="reveal" style={{ marginBottom:32, display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
         <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}><span>←</span> All writing</a>
         <a href="index.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}>Portfolio home</a>
       </div>
-      <header className="reveal d1" style={{ marginBottom:48 }}>
-        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.14em', color:'var(--accent)', marginBottom:18, display:'flex', gap:18, alignItems:'center' }}>
-          <span>2026-04-12</span><span style={{ color:'var(--fg-faint)' }}>·</span><span>8 min read</span><span style={{ color:'var(--fg-faint)' }}>·</span><span>Forecasting</span>
-        </div>
-        <h1 style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'clamp(42px,5.4vw,76px)', lineHeight:0.98, letterSpacing:'-0.025em', color:'var(--fg-bright)', marginBottom:24 }}>On forecasting under uncertainty</h1>
-        <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-xl)', lineHeight:1.4, color:'var(--fg-muted)' }}>Models, margins of error, and what "good enough" means in practice.</p>
-      </header>
-
-      <div className="prose reveal d2">
-        <p>Every forecast is a confession. It tells you what the forecaster believes, what they're willing to commit to in writing, and — most revealingly — what they're willing to be wrong about. The point is rarely to be <em>right</em>. It's to be wrong in a useful direction.</p>
-
-        <p>I spent most of 2024 building a forecasting tool called <a href="#" className="hoverable">Eddy</a>. The team it served ran a six-hour Friday ritual: pull data from three systems, reconcile, eyeball the residuals, write a one-page memo. The memo was usually correct. It was also, by the time anyone read it, two days late.</p>
-
-        <h2>The problem isn't the model</h2>
-
-        <p>The instinct in this kind of work is to reach for a fancier model. Better features, longer history, a transformer if you're feeling fashionable. But the gap between the team's spreadsheet and the system we replaced it with wasn't accuracy — it was <em>commitment</em>. The team gave you a number and a confidence interval. The new system gave you a number and a confidence interval that updated every fifteen minutes whether you were ready or not.</p>
-
-        <blockquote>"Good enough" is a function of who has to act on it, when, and what happens if they're wrong.</blockquote>
-
-        <p>That sentence sounds obvious until you try to write it down. Most of the forecasting literature treats the loss function as static — minimise RMSE, optimise log-likelihood, pick your poison. But in production, the loss function is a person. A person who's going to be in a meeting at 9am Monday and needs a number they can defend.</p>
-
-        <h2>Three margins worth caring about</h2>
-
-        <p>Through a year of iteration, three margins kept mattering more than the rest:</p>
-
-        <p><code>Latency</code> — how stale is the input by the time the output ships. We collapsed Eddy from a 6-hour batch to a 40-minute pipeline. Not because the math got faster; because we stopped reconciling things that didn't need reconciling.</p>
-
-        <p><code>Coverage</code> — the share of the things you're <em>supposed</em> to forecast that the system actually has an answer for. A 95% accurate forecast across 60% of the catalogue is worse than a 85% accurate one across 100%.</p>
-
-        <p><code>Trust decay</code> — how quickly users stop checking the model when it's quietly wrong. This one's the worst, because by the time you notice, the damage is already done. We started shipping a weekly "look at this graph, here's what surprised us" memo. It wasn't part of the spec. It probably mattered more than the model did.</p>
-
-        <h2>What I'd do differently</h2>
-
-        <p>I'd start with the memo. Build the artefact that the team would publish at the end of the week, then work backwards to the smallest model that could fill it in. Most forecasting projects build the model and then go looking for a reason it matters. That's the wrong direction.</p>
-
-        <p>I'd also keep the spreadsheet alive longer. The team's Friday ritual was the source of truth for two years after we shipped. It died eventually, but it died because the new system earned the right to replace it — not because we deprecated the old one out of pride.</p>
-
-        <p>If you take one thing from this: the forecast is the small part. The interface to the decision is the work.</p>
-      </div>
+      {!post ? (
+        <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-2xl)', color:'var(--fg-muted)', marginTop:80 }}>Post not found. <a href="blog.html" style={{ color:'var(--accent)' }}>Back to writing →</a></div>
+      ) : (
+        <>
+          <header className="reveal d1" style={{ marginBottom:48 }}>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.14em', color:'var(--accent)', marginBottom:18, display:'flex', gap:18, alignItems:'center', flexWrap:'wrap' }}>
+              <span>{post.date}</span><span style={{ color:'var(--fg-faint)' }}>·</span><span>{post.read} read</span>{primaryTag && (<><span style={{ color:'var(--fg-faint)' }}>·</span><span>{primaryTag}</span></>)}
+            </div>
+            <h1 style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'clamp(42px,5.4vw,76px)', lineHeight:0.98, letterSpacing:'-0.025em', color:'var(--fg-bright)', marginBottom:24 }}>{post.title}</h1>
+            <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-xl)', lineHeight:1.4, color:'var(--fg-muted)' }}>{post.sub}</p>
+          </header>
+          <div className="prose reveal d2" dangerouslySetInnerHTML={{ __html: html }} />
+        </>
+      )}
     </article>
   );
 }
 
-const PREV = { title:'Three months of training data, one DNF', date:'2026-03-08' };
-const NEXT = null;
-
-function Footer() {
+function Footer({ prev, next }) {
   return (
     <footer style={{ borderTop:'1px solid var(--border)', padding:'48px 52px 96px', maxWidth:1100 }}>
       <div className="sect-label reveal">CONTINUE</div>
       <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
-        {PREV ? (
-          <a href="article.html" className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
-            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>← Previous · {PREV.date}</div>
-            <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{PREV.title}</div>
+        {prev ? (
+          <a href={`article.html?slug=${prev.slug}`} className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>← Previous · {prev.date}</div>
+            <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{prev.title}</div>
           </a>
         ) : <div />}
-        {NEXT ? (
-          <a href="article.html" className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right' }}>
-            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>Next · {NEXT.date} →</div>
-            <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{NEXT.title}</div>
+        {next ? (
+          <a href={`article.html?slug=${next.slug}`} className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>Next · {next.date} →</div>
+            <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{next.title}</div>
           </a>
         ) : (
           <a href="blog.html" className="hoverable" style={{ background:'transparent', border:'1px dashed var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right', display:'flex', flexDirection:'column', justifyContent:'center' }}>
@@ -365,6 +341,22 @@ function Footer() {
 }
 
 function App() {
+  const [state, setState] = useState(null);
+  useEffect(() => {
+    fetch('content/posts.json').then(r => r.json()).then(({ posts }) => {
+      // Sort by date desc for consistent prev/next
+      const sorted = posts.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('slug') || (sorted[0] && sorted[0].slug);
+      const idx = sorted.findIndex(p => p.slug === slug);
+      const post = idx >= 0 ? sorted[idx] : null;
+      const prev = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
+      const next = idx > 0 ? sorted[idx - 1] : null;
+      if (post) document.title = `${post.title} — Toby Redshaw`;
+      setState({ post, prev, next });
+    }).catch(err => console.error('Content load failed:', err));
+  }, []);
+  if (!state) return <div style={{ position:'fixed', inset:0, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase' }}>loading…</div>;
   return (
     <>
       <Terminal />
@@ -372,8 +364,8 @@ function App() {
       <ThemeToggle />
       <FloatingMenu current="articles" />
       <div className="page">
-        <Article />
-        <Footer />
+        <Article post={state.post} />
+        <Footer prev={state.prev} next={state.next} />
       </div>
     </>
   );
