@@ -37,13 +37,13 @@
     {
       "role": "Business Analyst",
       "co": "Podium Analytics",
-      "years": "NOV 2024 — now",
+      "years": "NOV 2024 — NOW",
       "current": true
     },
     {
       "role": "QA Analyst",
       "co": "Podium Analytics",
-      "years": "SEPT 2024 - SEPT 2025",
+      "years": "SEP 2024 - SEP 2025",
       "current": false
     },
     {
@@ -113,7 +113,7 @@
           "21.1km"
         ]
       ],
-      "progress": 12,
+      "progress": 5,
       "raceLabel": "70.3 · OCT 2026 · 23 WKS"
     },
     "stats": [
