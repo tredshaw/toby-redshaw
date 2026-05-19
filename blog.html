@@ -6,7 +6,6 @@
   <title>Writing — Toby Redshaw</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
   <style>
     :root {
       --navy-900:#0a1a2e;--navy-800:#0d1f35;--navy-700:#112844;--navy-600:#16324f;--navy-500:#1d3c5e;
@@ -334,7 +333,7 @@ function Featured({ posts }) {
         <p style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-md)', lineHeight:1.6, color:'rgba(13,31,53,0.78)', maxWidth:600, marginBottom:28 }}>{p.sub}</p>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:16 }}>
           <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-            {p.tags.map(t=>(<span key={t} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', padding:'3px 9px', borderRadius:'var(--r-sm)', border:'1px solid rgba(13,31,53,0.28)', color:'#0a1a2e' }}>{t}</span>))}
+            {(p.tags||[]).map(t=>(<span key={t} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', padding:'3px 9px', borderRadius:'var(--r-sm)', border:'1px solid rgba(13,31,53,0.28)', color:'#0a1a2e' }}>{t}</span>))}
           </div>
           <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, textTransform:'uppercase', letterSpacing:'0.14em', color:'#0a1a2e' }}>Read essay →</span>
         </div>
