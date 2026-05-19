@@ -3,19 +3,571 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager — Toby Redshaw</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <title>Admin — Toby Redshaw</title>
+  <style>
+    :root {
+      --bg: #0d1f35;
+      --panel: #14283f;
+      --panel-2: #1b3450;
+      --border: #2a4566;
+      --text: #f4f1ea;
+      --muted: #9bb0c8;
+      --coral: #ff7a5c;
+      --seafoam: #7fd1c0;
+      --danger: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    a { color: var(--coral); }
+    button {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--coral); }
+    button.primary {
+      background: var(--coral);
+      border-color: var(--coral);
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+    button.danger {
+      background: transparent;
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    input, textarea, select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+    textarea { resize: vertical; min-height: 80px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+    label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; margin-top: 12px; }
+    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 32px; width: 100%; max-width: 360px; }
+    .login-card h1 { margin: 0 0 4px; font-size: 18px; }
+    .login-card .sub { color: var(--muted); margin-bottom: 24px; font-size: 12px; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--panel); position: sticky; top: 0; z-index: 10; }
+    .nav .tabs { display: flex; gap: 8px; }
+    .tab { padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; color: var(--muted); }
+    .tab.active { background: var(--panel-2); color: var(--text); }
+    .container { max-width: 880px; margin: 0 auto; padding: 24px; }
+    .section { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .section h2 { margin: 0 0 4px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--coral); }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .item { border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-top: 12px; background: var(--panel-2); }
+    .item-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .item-head strong { font-size: 13px; }
+    .actions { display: flex; gap: 8px; }
+    .toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 18px; border-radius: 6px; background: var(--seafoam); color: #0d1f35; font-weight: 600; z-index: 100; }
+    .toast.error { background: var(--danger); color: white; }
+    .save-bar { position: sticky; bottom: 0; background: var(--panel); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: flex-end; gap: 8px; margin: 0 -24px -24px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .post-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 4px; cursor: pointer; border: 1px solid transparent; }
+    .post-list-item:hover { border-color: var(--border); background: var(--panel-2); }
+    .post-list-item .date { color: var(--muted); font-size: 12px; margin-right: 12px; min-width: 90px; }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js"></script>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
-        }
-      });
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+    const TOKEN_KEY = 'admin_token';
+
+    function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
+    function setToken(t) { sessionStorage.setItem(TOKEN_KEY, t); }
+    function clearToken() { sessionStorage.removeItem(TOKEN_KEY); }
+
+    async function apiGet(file) {
+      const r = await fetch(`/api/content/${file}`);
+      if (!r.ok) throw new Error('Fetch failed');
+      return r.json();
     }
+    async function apiPut(file, content, sha) {
+      const r = await fetch(`/api/content/${file}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ content, sha }),
+      });
+      if (r.status === 401) { clearToken(); throw new Error('Session expired — please log in again.'); }
+      if (!r.ok) { const d = await r.json().catch(() => ({})); throw new Error(d.error || 'Save failed'); }
+      return r.json();
+    }
+
+    function Toast({ msg, error, onClose }) {
+      useEffect(() => { const t = setTimeout(onClose, 3500); return () => clearTimeout(t); }, []);
+      return <div className={`toast ${error ? 'error' : ''}`}>{msg}</div>;
+    }
+
+    function Login({ onLogin }) {
+      const [password, setPassword] = useState('');
+      const [err, setErr] = useState('');
+      const [busy, setBusy] = useState(false);
+      async function submit(e) {
+        e.preventDefault();
+        setBusy(true); setErr('');
+        try {
+          const r = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password }),
+          });
+          if (!r.ok) throw new Error('Invalid password');
+          const { token } = await r.json();
+          setToken(token);
+          onLogin();
+        } catch (e) { setErr(e.message); }
+        finally { setBusy(false); }
+      }
+      return (
+        <div className="login-wrap">
+          <form className="login-card" onSubmit={submit}>
+            <h1>Admin</h1>
+            <div className="sub">toby@redshaw.me</div>
+            <label>Password</label>
+            <input type="password" autoFocus value={password} onChange={e => setPassword(e.target.value)} />
+            {err && <div style={{ color: 'var(--danger)', marginTop: 10, fontSize: 12 }}>{err}</div>}
+            <button className="primary" type="submit" disabled={busy} style={{ marginTop: 18, width: '100%' }}>
+              {busy ? 'Signing in…' : 'Sign in'}
+            </button>
+          </form>
+        </div>
+      );
+    }
+
+    // ---- Reusable inputs ----
+    function Field({ label, value, onChange, type = 'text', textarea, rows }) {
+      const Cmp = textarea ? 'textarea' : 'input';
+      return (
+        <div>
+          {label && <label>{label}</label>}
+          <Cmp type={type} rows={rows} value={value || ''} onChange={e => onChange(e.target.value)} />
+        </div>
+      );
+    }
+
+    function CSVField({ label, value, onChange }) {
+      const str = Array.isArray(value) ? value.join(', ') : '';
+      return (
+        <div>
+          {label && <label>{label}</label>}
+          <input value={str} onChange={e => onChange(e.target.value.split(',').map(s => s.trim()).filter(Boolean))} />
+        </div>
+      );
+    }
+
+    function ArrayEditor({ title, items, onChange, render, blank }) {
+      function update(i, v) { const next = [...items]; next[i] = v; onChange(next); }
+      function add() { onChange([...(items || []), typeof blank === 'function' ? blank() : { ...blank }]); }
+      function remove(i) { onChange(items.filter((_, j) => j !== i)); }
+      function move(i, dir) {
+        const j = i + dir;
+        if (j < 0 || j >= items.length) return;
+        const next = [...items];
+        [next[i], next[j]] = [next[j], next[i]];
+        onChange(next);
+      }
+      return (
+        <div>
+          {title && <h2 style={{ marginTop: 18 }}>{title}</h2>}
+          {(items || []).map((it, i) => (
+            <div className="item" key={i}>
+              <div className="item-head">
+                <strong>#{i + 1}</strong>
+                <div className="actions">
+                  <button type="button" onClick={() => move(i, -1)}>↑</button>
+                  <button type="button" onClick={() => move(i, 1)}>↓</button>
+                  <button type="button" className="danger" onClick={() => remove(i)}>Delete</button>
+                </div>
+              </div>
+              {render(it, v => update(i, v))}
+            </div>
+          ))}
+          <button type="button" onClick={add} style={{ marginTop: 12 }}>+ Add</button>
+        </div>
+      );
+    }
+
+    // ---- SITE EDITOR ----
+    function SiteEditor({ data, onChange }) {
+      const set = (path, v) => {
+        const next = JSON.parse(JSON.stringify(data));
+        const keys = path.split('.');
+        let o = next;
+        for (let i = 0; i < keys.length - 1; i++) o = o[keys[i]] = o[keys[i]] || {};
+        o[keys[keys.length - 1]] = v;
+        onChange(next);
+      };
+      const d = data || {};
+      const hero = d.hero || {};
+      const about = d.about || {};
+      const contact = d.contact || {};
+      const blog = d.blog || {};
+
+      return (
+        <div>
+          <div className="section">
+            <h2>Identity</h2>
+            <Field label="Name" value={d.name} onChange={v => set('name', v)} />
+            <Field label="Tagline" value={d.tagline} onChange={v => set('tagline', v)} textarea rows={2} />
+            <CSVField label="Roles (comma-separated)" value={d.roles} onChange={v => set('roles', v)} />
+          </div>
+
+          <div className="section">
+            <h2>Hero — Triathlon</h2>
+            <div className="row">
+              <Field label="Race Label" value={hero.triathlon?.raceLabel} onChange={v => set('hero.triathlon.raceLabel', v)} />
+              <Field label="Progress (%)" type="number" value={hero.triathlon?.progress} onChange={v => set('hero.triathlon.progress', Number(v))} />
+            </div>
+            <ArrayEditor
+              title="Legs"
+              items={hero.triathlon?.legs || []}
+              onChange={v => set('hero.triathlon.legs', v)}
+              blank={() => ['', '']}
+              render={(leg, upd) => (
+                <div className="row">
+                  <Field label="Label" value={leg[0]} onChange={v => upd([v, leg[1]])} />
+                  <Field label="Distance" value={leg[1]} onChange={v => upd([leg[0], v])} />
+                </div>
+              )}
+            />
+            <ArrayEditor
+              title="Stats"
+              items={hero.stats || []}
+              onChange={v => set('hero.stats', v)}
+              blank={() => ['', '']}
+              render={(s, upd) => (
+                <div className="row">
+                  <Field label="Number" value={s[0]} onChange={v => upd([v, s[1]])} />
+                  <Field label="Label" value={s[1]} onChange={v => upd([s[0], v])} />
+                </div>
+              )}
+            />
+            <h2 style={{ marginTop: 18 }}>Hero — Music</h2>
+            <div className="row">
+              <Field label="Label" value={hero.music?.label} onChange={v => set('hero.music.label', v)} />
+              <Field label="Sub" value={hero.music?.sub} onChange={v => set('hero.music.sub', v)} />
+            </div>
+            <h2 style={{ marginTop: 18 }}>Hero — Location</h2>
+            <Field label="City" value={hero.location?.city} onChange={v => set('hero.location.city', v)} />
+            <Field label="School Line 1" value={hero.location?.schoolLine1} onChange={v => set('hero.location.schoolLine1', v)} />
+            <Field label="School Line 2" value={hero.location?.schoolLine2} onChange={v => set('hero.location.schoolLine2', v)} />
+            <h2 style={{ marginTop: 18 }}>Hero — Available Tile</h2>
+            <div className="row-3">
+              <Field label="Label" value={hero.available?.label} onChange={v => set('hero.available.label', v)} />
+              <Field label="Headline" value={hero.available?.headline} onChange={v => set('hero.available.headline', v)} />
+              <Field label="CTA" value={hero.available?.cta} onChange={v => set('hero.available.cta', v)} />
+            </div>
+          </div>
+
+          <div className="section">
+            <h2>About</h2>
+            <ArrayEditor
+              title="Paragraphs"
+              items={about.paragraphs || []}
+              onChange={v => set('about.paragraphs', v)}
+              blank={() => ''}
+              render={(p, upd) => <Field value={p} onChange={upd} textarea rows={4} />}
+            />
+            <Field label="Pull Quote" value={about.pullQuote} onChange={v => set('about.pullQuote', v)} textarea rows={2} />
+            <Field label="CV href" value={about.cvHref} onChange={v => set('about.cvHref', v)} />
+            <ArrayEditor
+              title="Currently (label / value)"
+              items={about.currently || []}
+              onChange={v => set('about.currently', v)}
+              blank={() => ({ label: '', value: '' })}
+              render={(c, upd) => (
+                <div className="row">
+                  <Field label="Label" value={c.label} onChange={v => upd({ ...c, label: v })} />
+                  <Field label="Value" value={c.value} onChange={v => upd({ ...c, value: v })} />
+                </div>
+              )}
+            />
+          </div>
+
+          <div className="section">
+            <h2>Experience Timeline</h2>
+            <ArrayEditor
+              items={d.experience || []}
+              onChange={v => set('experience', v)}
+              blank={() => ({ role: '', co: '', years: '', current: false })}
+              render={(e, upd) => (
+                <div>
+                  <div className="row">
+                    <Field label="Role" value={e.role} onChange={v => upd({ ...e, role: v })} />
+                    <Field label="Company" value={e.co} onChange={v => upd({ ...e, co: v })} />
+                  </div>
+                  <div className="row">
+                    <Field label="Years" value={e.years} onChange={v => upd({ ...e, years: v })} />
+                    <div>
+                      <label>Current?</label>
+                      <select value={e.current ? 'yes' : 'no'} onChange={ev => upd({ ...e, current: ev.target.value === 'yes' })}>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+            />
+          </div>
+
+          <div className="section">
+            <h2>Now Tiles</h2>
+            <ArrayEditor
+              items={d.now || []}
+              onChange={v => set('now', v)}
+              blank={() => ({ label: '', main: '', sub: '', tone: 'dark' })}
+              render={(n, upd) => (
+                <div>
+                  <Field label="Label" value={n.label} onChange={v => upd({ ...n, label: v })} />
+                  <Field label="Main" value={n.main} onChange={v => upd({ ...n, main: v })} />
+                  <Field label="Sub" value={n.sub} onChange={v => upd({ ...n, sub: v })} />
+                  <label>Tone</label>
+                  <select value={n.tone || 'dark'} onChange={e => upd({ ...n, tone: e.target.value })}>
+                    <option value="dark">dark</option>
+                    <option value="coral">coral</option>
+                    <option value="seafoam">seafoam</option>
+                  </select>
+                </div>
+              )}
+            />
+          </div>
+
+          <div className="section">
+            <h2>Contact</h2>
+            <Field label="Headline" value={contact.headline} onChange={v => set('contact.headline', v)} />
+            <Field label="Blurb" value={contact.blurb} onChange={v => set('contact.blurb', v)} textarea rows={2} />
+            <Field label="Footer" value={contact.footer} onChange={v => set('contact.footer', v)} />
+            <ArrayEditor
+              title="Links"
+              items={contact.links || []}
+              onChange={v => set('contact.links', v)}
+              blank={() => ({ label: '', href: '' })}
+              render={(l, upd) => (
+                <div className="row">
+                  <Field label="Label" value={l.label} onChange={v => upd({ ...l, label: v })} />
+                  <Field label="Href" value={l.href} onChange={v => upd({ ...l, href: v })} />
+                </div>
+              )}
+            />
+          </div>
+
+          <div className="section">
+            <h2>Blog Page Copy</h2>
+            <Field label="Title" value={blog.title} onChange={v => set('blog.title', v)} />
+            <Field label="Intro" value={blog.intro} onChange={v => set('blog.intro', v)} textarea rows={3} />
+            <CSVField label="Tags (comma-separated)" value={blog.tags} onChange={v => set('blog.tags', v)} />
+          </div>
+        </div>
+      );
+    }
+
+    // ---- PROJECTS EDITOR ----
+    function ProjectsEditor({ data, onChange }) {
+      const projects = (data && data.projects) || [];
+      return (
+        <div className="section">
+          <h2>Projects</h2>
+          <ArrayEditor
+            items={projects}
+            onChange={v => onChange({ ...(data || {}), projects: v })}
+            blank={() => ({ title: '', status: '', desc: '', tags: [], hero: false })}
+            render={(p, upd) => (
+              <div>
+                <Field label="Title" value={p.title} onChange={v => upd({ ...p, title: v })} />
+                <Field label="Status" value={p.status} onChange={v => upd({ ...p, status: v })} />
+                <Field label="Description" value={p.desc} onChange={v => upd({ ...p, desc: v })} textarea rows={3} />
+                <CSVField label="Tags (comma-separated)" value={p.tags} onChange={v => upd({ ...p, tags: v })} />
+                <label>Hero?</label>
+                <select value={p.hero ? 'yes' : 'no'} onChange={e => upd({ ...p, hero: e.target.value === 'yes' })}>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+              </div>
+            )}
+          />
+        </div>
+      );
+    }
+
+    // ---- POSTS EDITOR ----
+    function PostsEditor({ data, onChange }) {
+      const posts = (data && data.posts) || [];
+      const [editing, setEditing] = useState(null);
+
+      function updatePost(i, p) {
+        const next = [...posts];
+        next[i] = p;
+        onChange({ ...(data || {}), posts: next });
+      }
+      function addPost() {
+        const blank = { slug: 'new-post', title: 'Untitled', date: new Date().toISOString().slice(0, 10), sub: '', tags: [], read: '1 min', featured: false, body: '' };
+        onChange({ ...(data || {}), posts: [blank, ...posts] });
+        setEditing(0);
+      }
+      function deletePost(i) {
+        if (!confirm('Delete this post?')) return;
+        onChange({ ...(data || {}), posts: posts.filter((_, j) => j !== i) });
+        setEditing(null);
+      }
+
+      if (editing !== null && posts[editing]) {
+        const p = posts[editing];
+        const upd = v => updatePost(editing, v);
+        return (
+          <div className="section">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2>Edit Post</h2>
+              <button type="button" onClick={() => setEditing(null)}>← Back to list</button>
+            </div>
+            <div className="row">
+              <Field label="Slug" value={p.slug} onChange={v => upd({ ...p, slug: v })} />
+              <Field label="Date" value={p.date} onChange={v => upd({ ...p, date: v })} />
+            </div>
+            <Field label="Title" value={p.title} onChange={v => upd({ ...p, title: v })} />
+            <Field label="Sub / Excerpt" value={p.sub} onChange={v => upd({ ...p, sub: v })} textarea rows={3} />
+            <div className="row">
+              <Field label="Read Time" value={p.read} onChange={v => upd({ ...p, read: v })} />
+              <div>
+                <label>Featured?</label>
+                <select value={p.featured ? 'yes' : 'no'} onChange={e => upd({ ...p, featured: e.target.value === 'yes' })}>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+              </div>
+            </div>
+            <CSVField label="Tags (comma-separated)" value={p.tags} onChange={v => upd({ ...p, tags: v })} />
+            <Field label="Body (markdown)" value={p.body} onChange={v => upd({ ...p, body: v })} textarea rows={20} />
+            <button className="danger" type="button" onClick={() => deletePost(editing)} style={{ marginTop: 16 }}>Delete post</button>
+          </div>
+        );
+      }
+
+      return (
+        <div className="section">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2>Posts</h2>
+            <button type="button" onClick={addPost}>+ New Post</button>
+          </div>
+          {posts.length === 0 && <div className="muted" style={{ marginTop: 12 }}>No posts yet.</div>}
+          {posts.map((p, i) => (
+            <div className="post-list-item" key={i} onClick={() => setEditing(i)}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span className="date">{p.date}</span>
+                <strong>{p.title}</strong>
+              </div>
+              <span className="muted">{p.featured ? '★ ' : ''}{p.read}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // ---- TAB WRAPPER WITH SAVE ----
+    function ContentTab({ file, EditorCmp, setToast }) {
+      const [data, setData] = useState(null);
+      const [sha, setSha] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [saving, setSaving] = useState(false);
+      const [dirty, setDirty] = useState(false);
+
+      const load = useCallback(async () => {
+        setLoading(true);
+        try {
+          const r = await apiGet(file);
+          setData(r.content); setSha(r.sha); setDirty(false);
+        } catch (e) {
+          setToast({ msg: e.message, error: true });
+        } finally { setLoading(false); }
+      }, [file]);
+
+      useEffect(() => { load(); }, [load]);
+
+      async function save() {
+        setSaving(true);
+        try {
+          const r = await apiPut(file, data, sha);
+          if (r.sha) setSha(r.sha);
+          setDirty(false);
+          setToast({ msg: 'Saved — Vercel will redeploy shortly.' });
+        } catch (e) {
+          setToast({ msg: e.message, error: true });
+        } finally { setSaving(false); }
+      }
+
+      if (loading) return <div className="container"><div className="muted">Loading…</div></div>;
+      if (!data) return <div className="container"><div className="muted">No data.</div></div>;
+
+      return (
+        <div className="container">
+          <EditorCmp data={data} onChange={d => { setData(d); setDirty(true); }} />
+          <div className="save-bar">
+            <button type="button" onClick={load} disabled={saving}>Discard changes</button>
+            <button className="primary" type="button" onClick={save} disabled={saving || !dirty}>
+              {saving ? 'Saving…' : (dirty ? 'Save changes' : 'No changes')}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ---- ROOT APP ----
+    function App() {
+      const [authed, setAuthed] = useState(!!getToken());
+      const [tab, setTab] = useState('site');
+      const [toast, setToast] = useState(null);
+
+      if (!authed) return <Login onLogin={() => setAuthed(true)} />;
+
+      const tabs = [
+        { id: 'site', label: 'Site Copy', editor: SiteEditor },
+        { id: 'projects', label: 'Projects', editor: ProjectsEditor },
+        { id: 'posts', label: 'Posts', editor: PostsEditor },
+      ];
+      const active = tabs.find(t => t.id === tab);
+
+      return (
+        <div>
+          <div className="nav">
+            <div className="tabs">
+              {tabs.map(t => (
+                <div key={t.id} className={`tab ${tab === t.id ? 'active' : ''}`} onClick={() => setTab(t.id)}>{t.label}</div>
+              ))}
+            </div>
+            <button onClick={() => { clearToken(); setAuthed(false); }}>Sign out</button>
+          </div>
+          <ContentTab key={tab} file={tab} EditorCmp={active.editor} setToast={setToast} />
+          {toast && <Toast msg={toast.msg} error={toast.error} onClose={() => setToast(null)} />}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
