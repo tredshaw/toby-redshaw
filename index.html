@@ -91,13 +91,29 @@
     * { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
     *::-webkit-scrollbar { width: 6px; } *::-webkit-scrollbar-track { background: var(--bg); } *::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 999px; }
 
+    /* ── Tablet ─────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr 1fr !important; grid-template-rows: auto !important; }
+      .hero-grid > :first-child { grid-column: 1 / -1 !important; grid-row: auto !important; min-height: 220px !important; }
+      .hero-grid > *:not(:first-child) { grid-column: auto !important; grid-row: auto !important; }
+      #projects > .reveal.d1 { grid-template-columns: 1fr 1fr !important; grid-template-rows: auto !important; }
+      #projects > .reveal.d1 > * { grid-column: auto !important; grid-row: auto !important; min-height: 200px !important; }
+    }
+
     /* ── Mobile ─────────────────────────────────── */
     @media (max-width: 640px) {
       .sidebar-nav { display: none !important; }
       .page { margin-left: 0 !important; }
       section { padding: 56px 20px 48px !important; }
       .hero-grid { grid-template-columns: 1fr !important; grid-template-rows: auto !important; }
-      .hero-grid > * { grid-column: 1/-1 !important; grid-row: auto !important; }
+      .hero-grid > * { grid-column: 1 / -1 !important; grid-row: auto !important; min-height: auto !important; }
+      #projects > .reveal.d1 { grid-template-columns: 1fr !important; }
+      #projects > .reveal.d1 > * { grid-column: 1 / -1 !important; min-height: auto !important; }
+      #about > .reveal.d1,
+      #contact > .reveal.d1 { grid-template-columns: 1fr !important; gap: 32px !important; }
+      #now > .reveal.d1 { grid-template-columns: 1fr !important; }
+      #experience .reveal.d1 > .reveal { grid-template-columns: 1fr !important; gap: 6px !important; padding: 16px 0 !important; }
+      #experience .reveal.d1 > .reveal > :last-child { justify-self: start !important; }
     }
 
     /* Athletic ticker */
