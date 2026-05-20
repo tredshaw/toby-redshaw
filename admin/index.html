@@ -243,6 +243,10 @@
               <Field label="Race Label" value={hero.triathlon?.raceLabel} onChange={v => set('hero.triathlon.raceLabel', v)} />
               <Field label="Progress (%)" type="number" value={hero.triathlon?.progress} onChange={v => set('hero.triathlon.progress', Number(v))} />
             </div>
+            <div className="row">
+              <Field label="Race Date (YYYY-MM-DD)" value={hero.triathlon?.raceDate} onChange={v => set('hero.triathlon.raceDate', v)} />
+              <Field label="Training Start (YYYY-MM-DD)" value={hero.triathlon?.raceStart} onChange={v => set('hero.triathlon.raceStart', v)} />
+            </div>
             <ArrayEditor
               title="Legs"
               items={hero.triathlon?.legs || []}
@@ -256,7 +260,7 @@
               )}
             />
             <ArrayEditor
-              title="Stats"
+              title="Stats (coral panel — slide 1)"
               items={hero.stats || []}
               onChange={v => set('hero.stats', v)}
               blank={() => ['', '']}
@@ -267,11 +271,30 @@
                 </div>
               )}
             />
-            <h2 style={{ marginTop: 18 }}>Hero — Music</h2>
+            <h2 style={{ marginTop: 18 }}>Hero — Today (coral panel — slide 2)</h2>
+            <Field label="Label" value={hero.today?.label} onChange={v => set('hero.today.label', v)} />
+            <ArrayEditor
+              title="Items"
+              items={hero.today?.items || []}
+              onChange={v => set('hero.today.items', v)}
+              blank={() => ['', '']}
+              render={(it, upd) => (
+                <div className="row">
+                  <Field label="Amount" value={it[0]} onChange={v => upd([v, it[1]])} />
+                  <Field label="Activity" value={it[1]} onChange={v => upd([it[0], v])} />
+                </div>
+              )}
+            />
+            <h2 style={{ marginTop: 18 }}>Hero — Mantra (coral panel — slide 3)</h2>
+            <Field label="Label" value={hero.quote?.label} onChange={v => set('hero.quote.label', v)} />
+            <Field label="Quote" value={hero.quote?.text} onChange={v => set('hero.quote.text', v)} textarea rows={2} />
+            <Field label="Attribution" value={hero.quote?.by} onChange={v => set('hero.quote.by', v)} />
+            <h2 style={{ marginTop: 18 }}>Hero — Music (Toby's Mix)</h2>
             <div className="row">
-              <Field label="Label" value={hero.music?.label} onChange={v => set('hero.music.label', v)} />
-              <Field label="Sub" value={hero.music?.sub} onChange={v => set('hero.music.sub', v)} />
+              <Field label="Title" value={hero.music?.label} onChange={v => set('hero.music.label', v)} />
+              <Field label="Sub (unused in player view)" value={hero.music?.sub} onChange={v => set('hero.music.sub', v)} />
             </div>
+            <Field label="SoundCloud URL (set / playlist; for unlisted include ?secret_token=s-XXXX)" value={hero.music?.soundcloudUrl} onChange={v => set('hero.music.soundcloudUrl', v)} />
             <h2 style={{ marginTop: 18 }}>Hero — Location</h2>
             <Field label="City" value={hero.location?.city} onChange={v => set('hero.location.city', v)} />
             <Field label="School Line 1" value={hero.location?.schoolLine1} onChange={v => set('hero.location.schoolLine1', v)} />
