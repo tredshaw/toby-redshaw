@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+  <script src="https://www.youtube.com/iframe_api" defer></script>
   <style>
     :root {
       --navy-900:#0a1a2e;--navy-800:#0d1f35;--navy-700:#112844;--navy-600:#16324f;--navy-500:#1d3c5e;
@@ -14,6 +15,7 @@
       --cream-50:#f5f1e8;--cream-100:#f0ebe2;--cream-200:#d9d3c6;
       --muted-400:#8a93a4;--muted-500:#6b7280;--muted-600:#4b5563;
       --coral-400:#ff6b5b;--coral-500:#e85948;--coral-300:#ff8a7a;
+      --royal-400:#2b8bff;--royal-500:#1d6fe0;--royal-300:#6bb0ff;
       --bg:var(--navy-800);--bg-elevated:var(--navy-700);--bg-hover:var(--navy-600);
       --fg:var(--cream-100);--fg-bright:var(--cream-50);--fg-muted:var(--muted-500);--fg-faint:var(--muted-600);
       --accent:var(--seafoam-400);--accent-hover:var(--seafoam-300);--accent-press:var(--seafoam-500);--accent-soft:var(--seafoam-glow);
@@ -82,6 +84,43 @@
     @keyframes menuDrop { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: none; } }
     * { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
     *::-webkit-scrollbar { width: 6px; } *::-webkit-scrollbar-track { background: var(--bg); } *::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 999px; }
+
+    /* ── Mobile ─────────────────────────────────── */
+    @media (max-width: 640px) {
+      .sidebar-nav { display: none !important; }
+      .page { margin-left: 0 !important; }
+      section { padding: 56px 20px 48px !important; }
+      .hero-grid { grid-template-columns: 1fr !important; grid-template-rows: auto !important; }
+      .hero-grid > * { grid-column: 1/-1 !important; grid-row: auto !important; }
+    }
+
+    /* Athletic ticker */
+    .rope { stroke-dasharray: 3 3; }
+    @media (prefers-reduced-motion: no-preference) {
+      .rope { animation: ropeDash 1.2s linear infinite; }
+      .jog-wheel.spinning { animation: wheelSpin 2.6s linear infinite; transform-origin: center; transform-box: fill-box; }
+    }
+    @keyframes wheelSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes ropeDash  { to { stroke-dashoffset: -12; } }
+
+    /* Producer waveform bars (original style) */
+    .wf-bar { transform-origin: bottom; animation: wfbar 0.6s ease-in-out infinite alternate; }
+    @keyframes wfbar { 0% { transform: scaleY(0.22); } 100% { transform: scaleY(1); } }
+
+    /* Producer mini play button */
+    .mini-btn { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 1px solid var(--border-strong); border-radius: 50%; color: var(--accent); cursor: none; padding: 0; transition: border-color var(--dur-base), color var(--dur-base), background var(--dur-base); }
+    .mini-btn:hover { border-color: var(--accent); background: rgba(62,207,178,0.08); }
+    /* DJ channel fader — vertical via rotate(-90deg) inside overflow:hidden container */
+    .dj-fader { -webkit-appearance: none; appearance: none; width: 75px; height: 4px; background: transparent; cursor: none; padding: 0; margin: 0; transform: rotate(-90deg); display: block; }
+    .dj-fader::-webkit-slider-runnable-track { height: 3px; background: linear-gradient(to right, #3ecfb2, #2b8bff); border-radius: 2px; }
+    .dj-fader::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 6px; border-radius: 2px; background: var(--fg-bright); border: 1px solid rgba(240,235,226,0.3); margin-top: -1.5px; cursor: none; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .dj-fader::-moz-range-track { height: 3px; background: linear-gradient(to right, #3ecfb2, #2b8bff); border-radius: 2px; }
+    .dj-fader::-moz-range-thumb { width: 14px; height: 6px; border-radius: 2px; background: var(--fg-bright); border: 1px solid rgba(240,235,226,0.3); cursor: none; }
+    .deck-btn { background: rgba(240,235,226,0.04); border: 1px solid var(--border-strong); border-radius: 3px; width: 22px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--fg); cursor: none; padding: 0; transition: background var(--dur-base), border-color var(--dur-base), color var(--dur-base); }
+    .deck-btn:hover { background: rgba(62,207,178,0.12); border-color: var(--accent); color: var(--accent); }
+    .deck-marquee-track { display: inline-block; white-space: nowrap; animation: deckMarquee 14s linear infinite; }
+    @keyframes deckMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
   </style>
 </head>
 <body>
@@ -126,7 +165,7 @@ function SidebarNav() {
   }, []);
   const go = (id) => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.offsetTop - 28, behavior: 'smooth' }); };
   return (
-    <nav style={{ position:'fixed', left:0, top:0, bottom:0, width:76, display:'flex', flexDirection:'column', alignItems:'center', padding:'26px 0', borderRight:'1px solid rgba(240,235,226,0.06)', zIndex:100, gap:0 }}>
+    <nav className="sidebar-nav" style={{ position:'fixed', left:0, top:0, bottom:0, width:76, display:'flex', flexDirection:'column', alignItems:'center', padding:'26px 0', borderRight:'1px solid rgba(240,235,226,0.06)', zIndex:100, gap:0 }}>
       <button onClick={() => go('hero')} style={{ background:'none', border:'none', cursor:'none', marginBottom:32, padding:0 }}>
         {scrolled ? (
           <span className="tr-mark" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:15, fontWeight:500, letterSpacing:'0.2em', color:'var(--fg-bright)' }}>T<span style={{ color:'var(--accent)' }}>·</span>R</span>
@@ -319,12 +358,192 @@ function Terminal() {
   );
 }
 
+// ── Athlete images — the three reference PNGs coloured via SVG feColorMatrix filter.
+// Filter: fixes RGB to the sport colour; derives alpha from inverted luminance so
+//         white background pixels become transparent and black icon pixels become opaque.
+// Files expected: assets/icon-swim.png, assets/icon-cycle.png, assets/icon-run.png
+const ATHLETES = [
+  { src:'assets/icon-swim.png',  filterId:'athlete-seafoam' },
+  { src:'assets/icon-cycle.png', filterId:'athlete-coral'   },
+  { src:'assets/icon-run.png',   filterId:'athlete-royal'   },
+];
+
+function AthleticTicker({ roles }) {
+  // Flatten 3 repetitions into one array so block-boundary spacing == inner spacing
+  const items = [0,1,2].flatMap(() => roles.map((r, i) => ({ r, i })));
+  return (
+    <div style={{ display:'inline-flex', alignItems:'center', animation:'ticker 22s linear infinite', whiteSpace:'nowrap' }}>
+      {items.map(({ r, i }, idx) => {
+        const { src, filterId } = ATHLETES[i % ATHLETES.length];
+        return (
+          <span key={idx} style={{ display:'inline-flex', alignItems:'center', marginRight:28, lineHeight:'20px' }}>
+            <span style={{ display:'inline-flex', alignItems:'center', height:20, flexShrink:0 }}>
+              <img src={src} height="20" style={{ filter:`url(#${filterId})`, verticalAlign:'middle', display:'block' }} alt="" />
+            </span>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', color:'var(--fg-muted)', marginLeft:10, lineHeight:'20px' }}>{r}</span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── DJ Deck (Producer bento) ──────────────────────────────────────────────────
+function Decks({ label, sub, playlistId }) {
+  const WB_BASE = [10,16,7,20,13,18,6,22,11,17,8,14,9,19];
+  const [vol, setVol] = useState(() => { const v = parseInt(localStorage.getItem('tr_dj_vol') || '35', 10); return isNaN(v) ? 35 : v; });
+  const [playing, setPlaying] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [title, setTitle] = useState('queue ready');
+  const [bars, setBars] = useState(WB_BASE);
+  const playerRef = useRef(null);
+  const mountRef = useRef(null);
+  const rafRef = useRef(0);
+
+  // Mount player once API is ready
+  useEffect(() => {
+    let cancelled = false;
+    const create = () => {
+      if (cancelled || !mountRef.current || playerRef.current) return;
+      playerRef.current = new window.YT.Player(mountRef.current, {
+        height: '1', width: '1',
+        playerVars: { listType: 'playlist', list: playlistId, autoplay: 0, controls: 0, modestbranding: 1, playsinline: 1 },
+        events: {
+          onReady: (e) => { setReady(true); e.target.setVolume(vol); try { const d = e.target.getVideoData(); if (d && d.title) setTitle(d.title); } catch(_){} },
+          onStateChange: (e) => {
+            const YT = window.YT;
+            setPlaying(e.data === YT.PlayerState.PLAYING);
+            if (e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING || e.data === YT.PlayerState.CUED) {
+              try { const d = e.target.getVideoData(); if (d && d.title) setTitle(d.title); } catch(_){}
+            }
+          },
+        },
+      });
+    };
+    if (window.YT && window.YT.Player) create();
+    else {
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); create(); };
+    }
+    return () => { cancelled = true; if (playerRef.current && playerRef.current.destroy) { try { playerRef.current.destroy(); } catch(_){} } };
+  }, [playlistId]);
+
+  // Volume sync + persist
+  useEffect(() => {
+    localStorage.setItem('tr_dj_vol', String(vol));
+    if (playerRef.current && playerRef.current.setVolume) { try { playerRef.current.setVolume(vol); } catch(_){} }
+  }, [vol]);
+
+  // Amplitude meter
+  useEffect(() => {
+    if (!playing) { setBars(WB_BASE.map(h => Math.max(2, h * 0.18))); cancelAnimationFrame(rafRef.current); return; }
+    let t = 0;
+    const tick = () => {
+      t += 0.08;
+      const scale = (vol / 100) * 0.9 + 0.1;
+      setBars(WB_BASE.map((h, i) => {
+        const wob = 0.55 + 0.45 * Math.abs(Math.sin(t + i * 0.7) + 0.4 * Math.sin(t * 2.3 + i));
+        return Math.max(2, h * scale * wob);
+      }));
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [playing, vol]);
+
+  const togglePlay = () => { if (!ready || !playerRef.current) return; try { playing ? playerRef.current.pauseVideo() : playerRef.current.playVideo(); } catch(_){} };
+  const next = () => { if (!ready || !playerRef.current) return; try { playerRef.current.nextVideo(); } catch(_){} };
+  const prev = () => { if (!ready || !playerRef.current) return; try { playerRef.current.previousVideo(); } catch(_){} };
+
+  const playIcon = playing
+    ? <svg width="9" height="9" viewBox="0 0 9 9"><rect x="1" y="1" width="2.5" height="7" fill="currentColor"/><rect x="5.5" y="1" width="2.5" height="7" fill="currentColor"/></svg>
+    : <svg width="9" height="9" viewBox="0 0 9 9"><polygon points="1.5,0.5 8,4.5 1.5,8.5" fill="currentColor"/></svg>;
+
+  // Original-style waveform bars
+  const WB = [10,16,7,20,13,18,6,22,11,17,8,14,9,19];
+  const playIconSmall = playing
+    ? <svg width="8" height="8" viewBox="0 0 8 8"><rect x="1" y="1" width="2" height="6" fill="currentColor"/><rect x="5" y="1" width="2" height="6" fill="currentColor"/></svg>
+    : <svg width="8" height="8" viewBox="0 0 8 8"><polygon points="1.5,0.5 7,4 1.5,7.5" fill="currentColor"/></svg>;
+
+  return (
+    <div style={{ gridColumn:'3/4', gridRow:'2/3', minWidth:0, background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 16px', display:'flex', flexDirection:'row', gap:10, position:'relative', overflow:'hidden' }}>
+      {/* Left column: label + waveform + sub + play */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minWidth:0 }}>
+        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>{label}</div>
+        <div style={{ display:'flex', gap:2.5, alignItems:'flex-end', height:26, margin:'6px 0' }}>
+          {WB.map((h,i)=>(
+            <div key={i} className={playing ? 'wf-bar' : ''} style={{
+              width:2.5, height:h,
+              background:'var(--accent)',
+              opacity: playing ? 0.78 : 0.42,
+              animationDuration: `${0.3 + (i%4)*0.09}s`,
+              animationDelay: `${i*0.04}s`,
+            }} />
+          ))}
+        </div>
+        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{sub}</div>
+        <button className="mini-btn hoverable" onClick={togglePlay} aria-label={playing?'Pause':'Play'} style={{ color: playing ? 'var(--coral-400)' : 'var(--accent)', borderColor: playing ? 'var(--coral-400)' : 'var(--border-strong)', alignSelf:'flex-start', marginTop:8 }}>{playIconSmall}</button>
+      </div>
+      {/* Right column: vol label + vertical fader */}
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, flexShrink:0 }}>
+        <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:7, color:'var(--fg-faint)', letterSpacing:'0.08em' }}>{vol}</span>
+        <div style={{ width:20, height:75, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+          <input className="dj-fader hoverable" type="range" min="0" max="100" step="1" value={vol} onChange={(e)=>setVol(parseInt(e.target.value,10))} aria-label="Volume" />
+        </div>
+      </div>
+
+      <div ref={mountRef} style={{ position:'absolute', width:1, height:1, opacity:0, pointerEvents:'none', visibility:'hidden' }} />
+    </div>
+  );
+}
+
+// ── Rotating panel for the coral bento ────────────────────────────────────────
+function CoralRotator({ stats, today, quote }) {
+  const panels = [
+    { kind: 'stats', body: stats },
+    { kind: 'today', body: today },
+    { kind: 'quote', body: quote },
+  ];
+  const [idx, setIdx] = useState(0);
+  const [vis, setVis] = useState(true);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVis(false);
+      setTimeout(() => { setIdx(i => (i + 1) % panels.length); setVis(true); }, 280);
+    }, 6000);
+    return () => clearInterval(t);
+  }, []);
+  const p = panels[idx];
+  return (
+    <div style={{ gridColumn:'2/3', gridRow:'2/3', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'14px 15px', position:'relative', overflow:'hidden' }}>
+      <div style={{ position:'absolute', top:8, right:10, display:'flex', gap:3 }}>
+        {panels.map((_,i)=>(<span key={i} style={{ width:4, height:4, borderRadius:'50%', background: i===idx ? '#0d1f35' : 'rgba(13,31,53,0.25)' }} />))}
+      </div>
+      <div style={{ opacity: vis ? 1 : 0, transition:'opacity 260ms var(--ease-out-soft)' }}>
+        {p.kind === 'stats' && p.body.map(([n,l])=>(<div key={l} style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:7 }}><span style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:22, color:'#0d1f35', lineHeight:1 }}>{n}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>{l}</span></div>))}
+        {p.kind === 'today' && (
+          <div>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, color:'rgba(13,31,53,0.65)', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:6 }}>{p.body.label}</div>
+            {p.body.items.map(([n,l])=>(<div key={l} style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:5 }}><span style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:17, color:'#0d1f35', lineHeight:1 }}>{n}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>{l}</span></div>))}
+          </div>
+        )}
+        {p.kind === 'quote' && (
+          <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', height:'100%' }}>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, color:'rgba(13,31,53,0.65)', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:6 }}>{p.body.label}</div>
+            <div style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:15, color:'#0d1f35', lineHeight:1.25 }}>"{p.body.text}"</div>
+            <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:7.5, color:'rgba(13,31,53,0.55)', letterSpacing:'0.1em', marginTop:6 }}>— {p.body.by}</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero({ site }) {
   const ROLES = site.roles;
-  const RC_BASE=[{t:'#3ecfb2',b:'rgba(62,207,178,0.1)',br:'#3ecfb2'},{t:'#ff6b5b',b:'rgba(255,107,91,0.1)',br:'#ff6b5b'},{t:'#f0ebe2',b:'rgba(240,235,226,0.07)',br:'rgba(240,235,226,0.28)'},{t:'#6adcc4',b:'rgba(106,220,196,0.1)',br:'#6adcc4'},{t:'#ff8a7a',b:'rgba(255,138,122,0.1)',br:'#ff8a7a'}];
+  const RC_BASE=[{t:'#3ecfb2',b:'rgba(62,207,178,0.1)',br:'#3ecfb2'},{t:'#ff6b5b',b:'rgba(255,107,91,0.1)',br:'#ff6b5b'},{t:'#2b8bff',b:'rgba(43,139,255,0.12)',br:'#2b8bff'},{t:'#6adcc4',b:'rgba(106,220,196,0.1)',br:'#6adcc4'},{t:'#ff8a7a',b:'rgba(255,138,122,0.1)',br:'#ff8a7a'}];
   const RC = ROLES.map((_,i) => RC_BASE[i % RC_BASE.length]);
-  const WB=[10,16,7,20,13,18,6,22,11,17,8,14,9,19];
   const FN = site.name;
   const [role,setRole]=useState(0);
   const [name,setName]=useState(FN);
@@ -340,7 +559,7 @@ function Hero({ site }) {
       <style>{`@keyframes wfbar{0%,100%{transform:scaleY(0.22)}50%{transform:scaleY(1)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-33.33%)}}`}</style>
       <div className="sect-label reveal">01 / HERO</div>
 
-      <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'1.55fr 1fr 0.85fr', gridTemplateRows:'auto auto auto', gap:8 }}>
+      <div className="reveal d1 hero-grid" style={{ display:'grid', gridTemplateColumns:'1.55fr 1fr 0.85fr', gridTemplateRows:'auto auto auto', gap:10 }}>
         {/* Name */}
         <div onMouseEnter={scramble} style={{ gridColumn:'1/2', gridRow:'1/4', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'32px 26px 26px', display:'flex', flexDirection:'column', justifyContent:'flex-end', position:'relative', overflow:'hidden', minHeight:300 }}>
           <div style={{ position:'absolute', inset:0, background:'radial-gradient(65% 52% at 15% 88%, rgba(62,207,178,0.05) 0%, transparent 65%)', pointerEvents:'none' }} />
@@ -360,37 +579,45 @@ function Hero({ site }) {
           <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'clamp(13px,1.35vw,17px)', color:'var(--fg)', lineHeight:1.45, opacity:0.72, margin:0 }}>{site.tagline}</p>
         </div>
 
-        {/* Sport */}
-        <div style={{ gridColumn:'3/4', gridRow:'1/2', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'18px 15px' }}>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--accent)', marginBottom:10 }}>TRIATHLON</div>
-          <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'3px 10px', marginBottom:10 }}>
-            {site.hero.triathlon.legs.map(([d,v])=>(<React.Fragment key={d}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-muted)' }}>{d}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg)' }}>{v}</span></React.Fragment>))}
-          </div>
-          <div style={{ height:2, background:'var(--border)', borderRadius:1, marginBottom:7, overflow:'hidden' }}><div style={{ height:'100%', width:`${site.hero.triathlon.progress}%`, background:'var(--accent)' }} /></div>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{site.hero.triathlon.raceLabel}</div>
-        </div>
+        {/* Sport — live race countdown */}
+        {(() => {
+          const tri = site.hero.triathlon;
+          let progress = tri.progress; let label = tri.raceLabel;
+          if (tri.raceDate) {
+            const now = new Date();
+            const race = new Date(tri.raceDate + 'T00:00:00');
+            const start = new Date((tri.raceStart || new Date(race.getFullYear(),0,1).toISOString().slice(0,10)) + 'T00:00:00');
+            const total = Math.max(1, race - start);
+            const elapsed = Math.min(total, Math.max(0, now - start));
+            progress = Math.round((elapsed / total) * 100);
+            const days = Math.max(0, Math.ceil((race - now) / 86400000));
+            if (days <= 90) label = `${days} DAY${days===1?'':'S'} TO RACE`;
+          }
+          return (
+            <div style={{ gridColumn:'3/4', gridRow:'1/2', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'22px 18px' }}>
+              <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--accent)', marginBottom:10 }}>TRIATHLON</div>
+              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'4px 10px', marginBottom:10 }}>
+                {tri.legs.map(([d,v])=>(<React.Fragment key={d}><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:'var(--fg-muted)' }}>{d}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color:'var(--fg)' }}>{v}</span></React.Fragment>))}
+              </div>
+              <div style={{ height:2, background:'var(--border)', borderRadius:1, marginBottom:7, overflow:'hidden' }}><div style={{ height:'100%', width:`${progress}%`, background:'var(--accent)', transition:'width 600ms var(--ease-out-quart)' }} /></div>
+              <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{label}</div>
+            </div>
+          );
+        })()}
 
-        {/* Stats — HOT CORAL */}
-        <div style={{ gridColumn:'2/3', gridRow:'2/3', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'18px 15px' }}>
-          {site.hero.stats.map(([n,l])=>(<div key={l} style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:7 }}><span style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:22, color:'#0d1f35', lineHeight:1 }}>{n}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>{l}</span></div>))}
-        </div>
+        {/* Stats — HOT CORAL (now rotates) */}
+        <CoralRotator stats={site.hero.stats} today={site.hero.today} quote={site.hero.quote} />
 
-        {/* Music */}
-        <div style={{ gridColumn:'3/4', gridRow:'2/3', background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'18px 15px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>{site.hero.music.label}</div>
-          <div style={{ display:'flex', gap:2.5, alignItems:'flex-end', height:26, margin:'8px 0' }}>
-            {WB.map((h,i)=>(<div key={i} style={{ width:2.5, height:h, background:'var(--accent)', opacity:0.58, transformOrigin:'bottom', animation:`wfbar ${0.3+(i%4)*0.09}s ease-in-out infinite alternate`, animationDelay:`${i*0.04}s` }} />))}
-          </div>
-          <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{site.hero.music.sub}</div>
-        </div>
+        {/* Producer DJ deck */}
+        <Decks label={site.hero.music.label} sub={site.hero.music.sub} playlistId={site.hero.music.youtubePlaylistId} />
 
         {/* Location — SEAFOAM */}
-        <div style={{ gridColumn:'2/3', gridRow:'3/4', background:'var(--accent)', borderRadius:'var(--r-md)', padding:'18px 15px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
+        <div style={{ gridColumn:'2/3', gridRow:'3/4', background:'var(--accent)', borderRadius:'var(--r-md)', padding:'22px 18px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
           <div style={{ display:'flex', alignItems:'center', gap:7 }}>
             <div style={{ width:7, height:7, borderRadius:'50%', background:'#0a1a2e', opacity:0.4, animation:'pulse 2.2s ease-in-out infinite' }} />
-            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8.5, color:'#0a1a2e', letterSpacing:'0.11em' }}>{site.hero.location.city} · {time}</span>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, color:'#0a1a2e', letterSpacing:'0.11em' }}>{site.hero.location.city} · {time}</span>
           </div>
-          <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:11, color:'rgba(10,26,46,0.65)', lineHeight:1.65 }}>{site.hero.location.schoolLine1}<br/>{site.hero.location.schoolLine2}</div>
+          <div style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:12, color:'rgba(10,26,46,0.65)', lineHeight:1.65 }}>{site.hero.location.schoolLine1}<br/>{site.hero.location.schoolLine2}</div>
         </div>
 
         {/* Available */}
@@ -401,11 +628,9 @@ function Hero({ site }) {
         </div>
       </div>
 
-      {/* Ticker */}
-      <div className="reveal d2" style={{ overflow:'hidden', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)', padding:'9px 0', marginTop:8 }}>
-        <div style={{ display:'inline-block', animation:'ticker 18s linear infinite', whiteSpace:'nowrap' }}>
-          {[0,1,2].map(k=>{ const tickerItems = ROLES.flatMap(r => [r, '·']); return (<span key={k} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', marginRight:52 }}>{tickerItems.map((item,i)=>(<span key={i} style={{ color:item==='·'?'var(--accent)':'var(--fg-muted)', marginRight:10 }}>{item}</span>))}</span>); })}
-        </div>
+      {/* Athletic ticker */}
+      <div className="reveal d2" style={{ overflow:'hidden', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)', padding:'7px 0', marginTop:8, display:'flex', alignItems:'center' }}>
+        <AthleticTicker roles={ROLES} />
       </div>
     </section>
   );
@@ -613,6 +838,21 @@ function App() {
   if (!data) return <div style={{ position:'fixed', inset:0, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase' }}>loading…</div>;
   return (
     <>
+      {/* SVG filter defs — colourises the athlete PNGs in the ticker.
+          White pixels (luminance=1) → transparent; black pixels → sport colour. */}
+      <svg style={{ display:'none', position:'absolute', width:0, height:0 }} aria-hidden="true">
+        <defs>
+          <filter id="athlete-seafoam" colorInterpolationFilters="sRGB">
+            <feColorMatrix type="matrix" values="0 0 0 0 0.243  0 0 0 0 0.812  0 0 0 0 0.698  -0.333 -0.333 -0.333 1 0" />
+          </filter>
+          <filter id="athlete-coral" colorInterpolationFilters="sRGB">
+            <feColorMatrix type="matrix" values="0 0 0 0 1.0  0 0 0 0 0.420  0 0 0 0 0.357  -0.333 -0.333 -0.333 1 0" />
+          </filter>
+          <filter id="athlete-royal" colorInterpolationFilters="sRGB">
+            <feColorMatrix type="matrix" values="0 0 0 0 0.169  0 0 0 0 0.545  0 0 0 0 1.0  -0.333 -0.333 -0.333 1 0" />
+          </filter>
+        </defs>
+      </svg>
       <Terminal />
       <SidebarNav />
       <ThemeToggle />

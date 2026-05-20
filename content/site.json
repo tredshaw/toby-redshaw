@@ -114,7 +114,9 @@
         ]
       ],
       "progress": 5,
-      "raceLabel": "70.3 · OCT 2026 · 23 WKS"
+      "raceLabel": "70.3 · OCT 2026 · 23 WKS",
+      "raceDate": "2026-10-04",
+      "raceStart": "2026-01-01"
     },
     "stats": [
       [
@@ -130,9 +132,23 @@
         "Ironman 70.3 to train for"
       ]
     ],
+    "today": {
+      "label": "TODAY",
+      "items": [
+        ["60 min", "endurance bike"],
+        ["3 km", "easy swim"],
+        ["20 min", "core + mobility"]
+      ]
+    },
+    "quote": {
+      "label": "MANTRA",
+      "text": "Discipline equals freedom.",
+      "by": "Jocko Willink"
+    },
     "music": {
       "label": "PRODUCER",
-      "sub": "Recording EP and occasionally DJing · 2026"
+      "sub": "Recording EP and occasionally DJing · 2026",
+      "youtubePlaylistId": "PLtuJU3QG5epVyhCsYX5v-7sOLWLh4AK24"
     },
     "location": {
       "city": "London",
