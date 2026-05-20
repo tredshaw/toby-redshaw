@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
-  <script src="https://www.youtube.com/iframe_api" defer></script>
+  <script src="https://w.soundcloud.com/player/api.js" defer></script>
   <style>
     :root {
       --navy-900:#0a1a2e;--navy-800:#0d1f35;--navy-700:#112844;--navy-600:#16324f;--navy-500:#1d3c5e;
@@ -33,6 +33,7 @@
       --chrome-bg:rgba(13,31,53,0.78);--chrome-bg-strong:rgba(13,31,53,0.94);
       --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);--ease-out-quart:cubic-bezier(0.165,0.84,0.44,1);--ease-in-out:cubic-bezier(0.65,0,0.35,1);--ease-funky:cubic-bezier(0.34,1.56,0.64,1);
       --dur-quick:120ms;--dur-base:240ms;--dur-slow:480ms;--dur-reveal:720ms;--dur-tide:12s;
+      --deck-bg:#0a1a2e;--deck-fg:var(--cream-50);--deck-border:rgba(240,235,226,0.22);
     }
     body[data-theme="light"] {
       --bg: #f5f1e8; --bg-elevated: #ece5d4; --bg-hover: #ddd6c4;
@@ -40,6 +41,7 @@
       --border: rgba(10,26,46,0.1); --border-strong: rgba(10,26,46,0.22);
       --accent-soft: rgba(47,184,156,0.18);
       --chrome-bg: rgba(245,241,232,0.82); --chrome-bg-strong: rgba(245,241,232,0.96);
+      --deck-bg:var(--cream-50);--deck-fg:#0a1a2e;--deck-border:rgba(10,26,46,0.22);
     }
     body[data-theme="light"] .tide { background: radial-gradient(60% 50% at 18% 28%, rgba(62,207,178,0.1), transparent 60%), radial-gradient(70% 65% at 82% 72%, rgba(217,211,198,0.6), transparent 60%), var(--bg); }
     body[data-theme="light"] .grain { opacity: 0.03; mix-blend-mode: multiply; }
@@ -59,6 +61,10 @@
     .reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--dur-reveal) var(--ease-out-quart), transform var(--dur-reveal) var(--ease-out-quart); }
     .reveal.shown { opacity: 1; transform: none; }
     .d1 { transition-delay: 80ms; } .d2 { transition-delay: 160ms; } .d3 { transition-delay: 240ms; }
+    .ticker-strip { display: inline-block; transform: translateX(var(--strip-from-x, 100%)); }
+    .reveal.shown .ticker-strip { animation: ticker-strip-in 1.6s var(--ease-out-quart) 0.2s forwards; }
+    .reveal.shown .ticker-inner { animation: ticker 22s linear 1.9s infinite; }
+    @keyframes ticker-strip-in { from { transform: translateX(var(--strip-from-x, 100%)); } to { transform: translateX(0); } }
     .project-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--r-md); padding: 24px 22px; position: relative; overflow: hidden; transition: border-color var(--dur-base); cursor: default; }
     .project-card::before { content: ''; position: absolute; top: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.32s var(--ease-out-quart); }
     .project-card:hover::before { width: 100%; }
@@ -105,6 +111,7 @@
 
     /* Producer waveform bars (original style) */
     .wf-bar { transform-origin: bottom; animation: wfbar 0.6s ease-in-out infinite alternate; }
+    .wf-bar-center { transform-origin: center; animation: wfbar 0.6s ease-in-out infinite alternate; }
     @keyframes wfbar { 0% { transform: scaleY(0.22); } 100% { transform: scaleY(1); } }
 
     /* Producer mini play button */
@@ -112,10 +119,10 @@
     .mini-btn:hover { border-color: var(--accent); background: rgba(62,207,178,0.08); }
     /* DJ channel fader — vertical via rotate(-90deg) inside overflow:hidden container */
     .dj-fader { -webkit-appearance: none; appearance: none; width: 75px; height: 4px; background: transparent; cursor: none; padding: 0; margin: 0; transform: rotate(-90deg); display: block; }
-    .dj-fader::-webkit-slider-runnable-track { height: 3px; background: linear-gradient(to right, #3ecfb2, #2b8bff); border-radius: 2px; }
-    .dj-fader::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 6px; border-radius: 2px; background: var(--fg-bright); border: 1px solid rgba(240,235,226,0.3); margin-top: -1.5px; cursor: none; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-    .dj-fader::-moz-range-track { height: 3px; background: linear-gradient(to right, #3ecfb2, #2b8bff); border-radius: 2px; }
-    .dj-fader::-moz-range-thumb { width: 14px; height: 6px; border-radius: 2px; background: var(--fg-bright); border: 1px solid rgba(240,235,226,0.3); cursor: none; }
+    .dj-fader::-webkit-slider-runnable-track { height: 2px; background: var(--accent); border-radius: 1px; }
+    .dj-fader::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 5px; height: 24px; border-radius: 2px; background: var(--fg-bright); border: 1px solid rgba(10,26,46,0.35); margin-top: -11px; cursor: none; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .dj-fader::-moz-range-track { height: 2px; background: var(--accent); border-radius: 1px; }
+    .dj-fader::-moz-range-thumb { width: 5px; height: 24px; border-radius: 2px; background: var(--fg-bright); border: 1px solid rgba(10,26,46,0.35); cursor: none; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
     .deck-btn { background: rgba(240,235,226,0.04); border: 1px solid var(--border-strong); border-radius: 3px; width: 22px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--fg); cursor: none; padding: 0; transition: background var(--dur-base), border-color var(--dur-base), color var(--dur-base); }
     .deck-btn:hover { background: rgba(62,207,178,0.12); border-color: var(--accent); color: var(--accent); }
     .deck-marquee-track { display: inline-block; white-space: nowrap; animation: deckMarquee 14s linear infinite; }
@@ -369,130 +376,185 @@ const ATHLETES = [
 ];
 
 function AthleticTicker({ roles }) {
-  // Flatten 3 repetitions into one array so block-boundary spacing == inner spacing
-  const items = [0,1,2].flatMap(() => roles.map((r, i) => ({ r, i })));
+  // Flatten 6 repetitions so the strip is always wider than the container — required
+  // for a seamless infinite marquee (loop step = 1 rep width must leave the remaining
+  // reps wider than the visible area, otherwise an empty gap shows at the right edge).
+  const items = [0,1,2,3,4,5].flatMap(() => roles.map((r, i) => ({ r, i })));
+  const stripRef = useRef(null);
+
+  useEffect(() => {
+    const node = stripRef.current;
+    if (!node || !node.parentElement) return;
+    const setFromX = () => { node.style.setProperty('--strip-from-x', `${node.parentElement.clientWidth}px`); };
+    setFromX();
+    window.addEventListener('resize', setFromX);
+    return () => window.removeEventListener('resize', setFromX);
+  }, []);
+
   return (
-    <div style={{ display:'inline-flex', alignItems:'center', animation:'ticker 22s linear infinite', whiteSpace:'nowrap' }}>
-      {items.map(({ r, i }, idx) => {
-        const { src, filterId } = ATHLETES[i % ATHLETES.length];
-        return (
-          <span key={idx} style={{ display:'inline-flex', alignItems:'center', marginRight:28, lineHeight:'20px' }}>
-            <span style={{ display:'inline-flex', alignItems:'center', height:20, flexShrink:0 }}>
-              <img src={src} height="20" style={{ filter:`url(#${filterId})`, verticalAlign:'middle', display:'block' }} alt="" />
+    <div ref={stripRef} className="ticker-strip">
+      <div className="ticker-inner" style={{ display:'inline-flex', alignItems:'center', whiteSpace:'nowrap' }}>
+        {items.map(({ r, i }, idx) => {
+          const { src, filterId } = ATHLETES[i % ATHLETES.length];
+          return (
+            <span key={idx} style={{ display:'inline-flex', alignItems:'center', marginRight:28, lineHeight:'20px' }}>
+              <span style={{ display:'inline-flex', alignItems:'center', height:20, flexShrink:0 }}>
+                <img src={src} height="20" style={{ filter:`url(#${filterId})`, verticalAlign:'middle', display:'block' }} alt="" />
+              </span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', color:'var(--fg-muted)', marginLeft:10, lineHeight:'20px' }}>{r}</span>
             </span>
-            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', color:'var(--fg-muted)', marginLeft:10, lineHeight:'20px' }}>{r}</span>
-          </span>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
 
 // ── DJ Deck (Producer bento) ──────────────────────────────────────────────────
-function Decks({ label, sub, playlistId }) {
-  const WB_BASE = [10,16,7,20,13,18,6,22,11,17,8,14,9,19];
+function Decks({ label, sub, soundcloudUrl }) {
   const [vol, setVol] = useState(() => { const v = parseInt(localStorage.getItem('tr_dj_vol') || '35', 10); return isNaN(v) ? 35 : v; });
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
   const [title, setTitle] = useState('queue ready');
-  const [bars, setBars] = useState(WB_BASE);
-  const playerRef = useRef(null);
-  const mountRef = useRef(null);
-  const rafRef = useRef(0);
+  const [artist, setArtist] = useState('');
+  const widgetRef = useRef(null);
+  const iframeRef = useRef(null);
+  const soundsCountRef = useRef(0);
+  const currentIdxRef = useRef(-1);
 
-  // Mount player once API is ready
+  const pickRandomIdx = () => {
+    const n = soundsCountRef.current;
+    if (n <= 1) return 0;
+    let idx;
+    do { idx = Math.floor(Math.random() * n); } while (idx === currentIdxRef.current);
+    currentIdxRef.current = idx;
+    return idx;
+  };
+
+  // Bind SoundCloud widget once API + iframe are ready
   useEffect(() => {
     let cancelled = false;
-    const create = () => {
-      if (cancelled || !mountRef.current || playerRef.current) return;
-      playerRef.current = new window.YT.Player(mountRef.current, {
-        height: '1', width: '1',
-        playerVars: { listType: 'playlist', list: playlistId, autoplay: 0, controls: 0, modestbranding: 1, playsinline: 1 },
-        events: {
-          onReady: (e) => { setReady(true); e.target.setVolume(vol); try { const d = e.target.getVideoData(); if (d && d.title) setTitle(d.title); } catch(_){} },
-          onStateChange: (e) => {
-            const YT = window.YT;
-            setPlaying(e.data === YT.PlayerState.PLAYING);
-            if (e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING || e.data === YT.PlayerState.CUED) {
-              try { const d = e.target.getVideoData(); if (d && d.title) setTitle(d.title); } catch(_){}
-            }
-          },
-        },
+    let pollIv = 0;
+    const attach = () => {
+      if (cancelled || widgetRef.current) return true;
+      if (!iframeRef.current) return false;
+      if (!(window.SC && window.SC.Widget)) return false;
+      const w = window.SC.Widget(iframeRef.current);
+      widgetRef.current = w;
+      const refreshSound = () => {
+        try { w.getCurrentSound((s) => {
+          if (!s) return;
+          if (s.title) setTitle(s.title);
+          if (s.user && s.user.username) setArtist(s.user.username);
+        }); } catch(_){}
+      };
+      w.bind(window.SC.Widget.Events.READY, () => {
+        setReady(true);
+        try { w.setVolume(vol); } catch(_){}
+        try { w.getSounds((arr) => {
+          if (arr && arr.length) {
+            soundsCountRef.current = arr.length;
+            if (arr.length > 1) { try { w.skip(pickRandomIdx()); } catch(_){} }
+          }
+          refreshSound();
+        }); } catch(_){ refreshSound(); }
       });
+      w.bind(window.SC.Widget.Events.PLAY, () => { setPlaying(true); refreshSound(); });
+      w.bind(window.SC.Widget.Events.PAUSE, () => setPlaying(false));
+      w.bind(window.SC.Widget.Events.FINISH, () => {
+        setPlaying(false);
+        if (soundsCountRef.current > 1) {
+          try { w.skip(pickRandomIdx()); w.play(); } catch(_){}
+        }
+      });
+      return true;
     };
-    if (window.YT && window.YT.Player) create();
-    else {
-      const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); create(); };
+    if (!attach()) {
+      pollIv = setInterval(() => { if (attach()) clearInterval(pollIv); }, 120);
     }
-    return () => { cancelled = true; if (playerRef.current && playerRef.current.destroy) { try { playerRef.current.destroy(); } catch(_){} } };
-  }, [playlistId]);
+    return () => { cancelled = true; if (pollIv) clearInterval(pollIv); widgetRef.current = null; };
+  }, [soundcloudUrl]);
 
   // Volume sync + persist
   useEffect(() => {
     localStorage.setItem('tr_dj_vol', String(vol));
-    if (playerRef.current && playerRef.current.setVolume) { try { playerRef.current.setVolume(vol); } catch(_){} }
+    if (widgetRef.current) { try { widgetRef.current.setVolume(vol); } catch(_){} }
   }, [vol]);
 
-  // Amplitude meter
-  useEffect(() => {
-    if (!playing) { setBars(WB_BASE.map(h => Math.max(2, h * 0.18))); cancelAnimationFrame(rafRef.current); return; }
-    let t = 0;
-    const tick = () => {
-      t += 0.08;
-      const scale = (vol / 100) * 0.9 + 0.1;
-      setBars(WB_BASE.map((h, i) => {
-        const wob = 0.55 + 0.45 * Math.abs(Math.sin(t + i * 0.7) + 0.4 * Math.sin(t * 2.3 + i));
-        return Math.max(2, h * scale * wob);
-      }));
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [playing, vol]);
+  const togglePlay = () => { if (!ready || !widgetRef.current) return; try { widgetRef.current.toggle(); } catch(_){} };
+  const next = () => {
+    if (!ready || !widgetRef.current) return;
+    try {
+      if (soundsCountRef.current > 1) widgetRef.current.skip(pickRandomIdx());
+      else widgetRef.current.next();
+    } catch(_){}
+  };
+  const prev = () => {
+    if (!ready || !widgetRef.current) return;
+    try {
+      if (soundsCountRef.current > 1) widgetRef.current.skip(pickRandomIdx());
+      else widgetRef.current.prev();
+    } catch(_){}
+  };
 
-  const togglePlay = () => { if (!ready || !playerRef.current) return; try { playing ? playerRef.current.pauseVideo() : playerRef.current.playVideo(); } catch(_){} };
-  const next = () => { if (!ready || !playerRef.current) return; try { playerRef.current.nextVideo(); } catch(_){} };
-  const prev = () => { if (!ready || !playerRef.current) return; try { playerRef.current.previousVideo(); } catch(_){} };
+  const scSrc = `https://w.soundcloud.com/player/?url=${encodeURIComponent(soundcloudUrl)}&visual=false&hide_related=true&show_comments=false&show_user=false&show_artwork=false&show_teaser=false&buying=false&liking=false&download=false&sharing=false&single_active=false`;
 
-  const playIcon = playing
-    ? <svg width="9" height="9" viewBox="0 0 9 9"><rect x="1" y="1" width="2.5" height="7" fill="currentColor"/><rect x="5.5" y="1" width="2.5" height="7" fill="currentColor"/></svg>
-    : <svg width="9" height="9" viewBox="0 0 9 9"><polygon points="1.5,0.5 8,4.5 1.5,8.5" fill="currentColor"/></svg>;
-
-  // Original-style waveform bars
   const WB = [10,16,7,20,13,18,6,22,11,17,8,14,9,19];
-  const playIconSmall = playing
-    ? <svg width="8" height="8" viewBox="0 0 8 8"><rect x="1" y="1" width="2" height="6" fill="currentColor"/><rect x="5" y="1" width="2" height="6" fill="currentColor"/></svg>
-    : <svg width="8" height="8" viewBox="0 0 8 8"><polygon points="1.5,0.5 7,4 1.5,7.5" fill="currentColor"/></svg>;
+
+  const ttBtnStyle = { width:30, height:24, display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', border:'1px solid var(--border-strong)', borderRadius:6, color:'var(--accent)', cursor:'none', padding:0, transition:'border-color var(--dur-base), background var(--dur-base)' };
+  const ttHoverIn = (e) => { e.currentTarget.style.borderColor='var(--accent)'; e.currentTarget.style.background='rgba(62,207,178,0.08)'; };
+  const ttHoverOut = (e) => { e.currentTarget.style.borderColor='var(--border-strong)'; e.currentTarget.style.background='transparent'; };
 
   return (
-    <div style={{ gridColumn:'3/4', gridRow:'2/3', minWidth:0, background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 16px', display:'flex', flexDirection:'row', gap:10, position:'relative', overflow:'hidden' }}>
-      {/* Left column: label + waveform + sub + play */}
-      <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minWidth:0 }}>
-        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)' }}>{label}</div>
-        <div style={{ display:'flex', gap:2.5, alignItems:'flex-end', height:26, margin:'6px 0' }}>
-          {WB.map((h,i)=>(
-            <div key={i} className={playing ? 'wf-bar' : ''} style={{
-              width:2.5, height:h,
-              background:'var(--accent)',
-              opacity: playing ? 0.78 : 0.42,
-              animationDuration: `${0.3 + (i%4)*0.09}s`,
-              animationDelay: `${i*0.04}s`,
-            }} />
-          ))}
-        </div>
-        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'var(--fg-muted)', letterSpacing:'0.09em' }}>{sub}</div>
-        <button className="mini-btn hoverable" onClick={togglePlay} aria-label={playing?'Pause':'Play'} style={{ color: playing ? 'var(--coral-400)' : 'var(--accent)', borderColor: playing ? 'var(--coral-400)' : 'var(--border-strong)', alignSelf:'flex-start', marginTop:8 }}>{playIconSmall}</button>
+    <div style={{ gridColumn:'3/4', gridRow:'2/3', minWidth:0, background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'14px 14px', display:'flex', flexDirection:'row', alignItems:'stretch', gap:12, position:'relative', overflow:'hidden' }}>
+      {/* Col 1: title block */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', minWidth:0, gap:2 }}>
+        <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-bright)' }}>{label}</div>
+        <div title={title} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.11em', color:'var(--accent)', marginTop:3, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{title}</div>
+        {artist && <div title={artist} style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:7.5, textTransform:'uppercase', letterSpacing:'0.1em', color:'var(--accent)', opacity:0.72, marginTop:2, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{artist}</div>}
       </div>
-      {/* Right column: vol label + vertical fader */}
-      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, flexShrink:0 }}>
-        <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:7, color:'var(--fg-faint)', letterSpacing:'0.08em' }}>{vol}</span>
-        <div style={{ width:20, height:75, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-          <input className="dj-fader hoverable" type="range" min="0" max="100" step="1" value={vol} onChange={(e)=>setVol(parseInt(e.target.value,10))} aria-label="Volume" />
+
+      {/* Col 2: turntable + transport */}
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'flex-end', gap:6, flexShrink:0 }}>
+        <div style={{ position:'relative', width:62, height:62, borderRadius:'50%', background:'var(--bg)', border:'1.5px solid var(--deck-fg)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+          <div style={{ display:'flex', gap:2, alignItems:'center', height:26 }}>
+            {WB.map((h,i)=>(
+              <div key={i} className={playing ? 'wf-bar-center' : ''} style={{
+                width:2,
+                height: playing ? Math.max(3, h*0.65) : Math.max(2, h*0.18),
+                background:'var(--coral-400)',
+                opacity: playing ? 0.95 : 0.4,
+                borderRadius:1,
+                animationDuration: `${0.32 + (i%4)*0.09}s`,
+                animationDelay: `${i*0.04}s`,
+              }} />
+            ))}
+          </div>
+        </div>
+        <div style={{ display:'flex', gap:4 }}>
+          <button className="hoverable" onClick={prev} aria-label="Previous" style={ttBtnStyle} onMouseEnter={ttHoverIn} onMouseLeave={ttHoverOut}>
+            <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor"><rect x="1" y="1.5" width="1.4" height="7"/><polygon points="9,1.5 9,8.5 3.2,5"/></svg>
+          </button>
+          <button className="hoverable" onClick={togglePlay} aria-label={playing?'Pause':'Play'} style={ttBtnStyle} onMouseEnter={ttHoverIn} onMouseLeave={ttHoverOut}>
+            {playing
+              ? <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor"><rect x="2" y="1.5" width="2" height="7"/><rect x="6" y="1.5" width="2" height="7"/></svg>
+              : <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor"><polygon points="2.5,1.5 8.5,5 2.5,8.5"/></svg>}
+          </button>
+          <button className="hoverable" onClick={next} aria-label="Next" style={ttBtnStyle} onMouseEnter={ttHoverIn} onMouseLeave={ttHoverOut}>
+            <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor"><polygon points="1,1.5 1,8.5 6.8,5"/><rect x="7.6" y="1.5" width="1.4" height="7"/></svg>
+          </button>
         </div>
       </div>
 
-      <div ref={mountRef} style={{ position:'absolute', width:1, height:1, opacity:0, pointerEvents:'none', visibility:'hidden' }} />
+      {/* Col 3: vertical fader */}
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'flex-end', gap:4, flexShrink:0 }}>
+        <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:7, color:'var(--fg-faint)', letterSpacing:'0.08em' }}>{vol}</span>
+        <div style={{ width:22, height:92, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <input className="dj-fader hoverable" type="range" min="0" max="100" step="1" value={vol} onChange={(e)=>setVol(parseInt(e.target.value,10))} aria-label="Volume" style={{ width:92 }} />
+        </div>
+      </div>
+
+      <iframe ref={iframeRef} src={scSrc} title="SoundCloud player" allow="autoplay; encrypted-media" style={{ position:'absolute', left:-9999, top:-9999, width:1, height:1, opacity:0, pointerEvents:'none', border:0 }} />
     </div>
   );
 }
@@ -515,11 +577,11 @@ function CoralRotator({ stats, today, quote }) {
   }, []);
   const p = panels[idx];
   return (
-    <div style={{ gridColumn:'2/3', gridRow:'2/3', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'14px 15px', position:'relative', overflow:'hidden' }}>
+    <div style={{ gridColumn:'2/3', gridRow:'2/3', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'14px 15px', position:'relative', overflow:'hidden', display:'flex', flexDirection:'column', justifyContent:'center' }}>
       <div style={{ position:'absolute', top:8, right:10, display:'flex', gap:3 }}>
         {panels.map((_,i)=>(<span key={i} style={{ width:4, height:4, borderRadius:'50%', background: i===idx ? '#0d1f35' : 'rgba(13,31,53,0.25)' }} />))}
       </div>
-      <div style={{ opacity: vis ? 1 : 0, transition:'opacity 260ms var(--ease-out-soft)' }}>
+      <div style={{ opacity: vis ? 1 : 0, transition:'opacity 260ms var(--ease-out-soft)', width:'100%' }}>
         {p.kind === 'stats' && p.body.map(([n,l])=>(<div key={l} style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:7 }}><span style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:22, color:'#0d1f35', lineHeight:1 }}>{n}</span><span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, color:'rgba(13,31,53,0.62)', letterSpacing:'0.09em' }}>{l}</span></div>))}
         {p.kind === 'today' && (
           <div>
@@ -556,7 +618,7 @@ function Hero({ site }) {
 
   return (
     <section id="hero" style={{ minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center' }}>
-      <style>{`@keyframes wfbar{0%,100%{transform:scaleY(0.22)}50%{transform:scaleY(1)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-33.33%)}}`}</style>
+      <style>{`@keyframes wfbar{0%,100%{transform:scaleY(0.22)}50%{transform:scaleY(1)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-16.667%)}}@keyframes djspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
       <div className="sect-label reveal">01 / HERO</div>
 
       <div className="reveal d1 hero-grid" style={{ display:'grid', gridTemplateColumns:'1.55fr 1fr 0.85fr', gridTemplateRows:'auto auto auto', gap:10 }}>
@@ -609,7 +671,7 @@ function Hero({ site }) {
         <CoralRotator stats={site.hero.stats} today={site.hero.today} quote={site.hero.quote} />
 
         {/* Producer DJ deck */}
-        <Decks label={site.hero.music.label} sub={site.hero.music.sub} playlistId={site.hero.music.youtubePlaylistId} />
+        <Decks label={site.hero.music.label} sub={site.hero.music.sub} soundcloudUrl={site.hero.music.soundcloudUrl} />
 
         {/* Location — SEAFOAM */}
         <div style={{ gridColumn:'2/3', gridRow:'3/4', background:'var(--accent)', borderRadius:'var(--r-md)', padding:'22px 18px', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
@@ -716,7 +778,7 @@ function Experience({ jobs }) {
       <div className="sect-label reveal">04 / EXPERIENCE</div>
       <div className="reveal d1">
         {jobs.map((j,i)=>(
-          <div key={j.co} className="reveal" style={{ transitionDelay:`${i*80}ms`, display:'grid', gridTemplateColumns:'120px 1fr auto', alignItems:'baseline', gap:20, padding:'18px 0', borderBottom:'1px solid var(--border)' }}>
+          <div key={`${j.co}-${i}`} className="reveal" style={{ transitionDelay:`${i*80}ms`, display:'grid', gridTemplateColumns:'120px 1fr auto', alignItems:'baseline', gap:20, padding:'18px 0', borderBottom:'1px solid var(--border)' }}>
             <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, color: j.current?'var(--accent)':'var(--fg-faint)', letterSpacing:'0.08em' }}>{j.years}</span>
             <div>
               <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-xl)', color: j.current?'var(--fg-bright)':'var(--fg)', lineHeight:1.2 }}>{j.role}</div>
