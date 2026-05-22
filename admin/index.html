@@ -114,7 +114,11 @@
         body: JSON.stringify({ content, sha }),
       });
       if (r.status === 401) { clearToken(); throw new Error('Session expired — please log in again.'); }
-      if (!r.ok) { const d = await r.json().catch(() => ({})); throw new Error(d.error || 'Save failed'); }
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        const detailMsg = d.detail && (d.detail.message || JSON.stringify(d.detail));
+        throw new Error([d.error || 'Save failed', detailMsg].filter(Boolean).join(' — '));
+      }
       return r.json();
     }
 
