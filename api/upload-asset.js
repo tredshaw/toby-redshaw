@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const ALLOWED = {
   cv: { path: 'assets/cv.pdf', mime: 'application/pdf', maxBytes: 8 * 1024 * 1024 },
