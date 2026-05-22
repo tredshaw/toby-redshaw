@@ -9,7 +9,7 @@
         "React",
         "Product"
       ],
-      "hero": true
+      "hero": false
     },
     {
       "title": "Eddy",
@@ -32,7 +32,7 @@
         "Ethics",
         "Machine Learning"
       ],
-      "hero": false
+      "hero": true
     }
   ]
 }
