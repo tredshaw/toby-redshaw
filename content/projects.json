@@ -3,7 +3,7 @@
     {
       "title": "Lab2Launch",
       "status": "WORKING ON IT · 2026",
-      "desc": "A platform that turns university research into companies. The catch was making spinout paperwork legible to scientists.",
+      "desc": "An investor readiness tool for deep-tech founders and researchers.",
       "tags": [
         "Python",
         "React",
@@ -14,7 +14,7 @@
     {
       "title": "Eddy",
       "status": "WORKING ON IT · 2026",
-      "desc": "Forecasting tool that cut a six-hour weekly report to forty minutes.",
+      "desc": "Helping anxious swimmers, beginners, and triathletes feel more confident in the water.",
       "tags": [
         "Python",
         "Data"
