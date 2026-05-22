@@ -3,6 +3,8 @@
   "outputDirectory": ".",
   "installCommand": "npm install",
   "buildCommand": "",
+  "cleanUrls": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/content/(.*)",

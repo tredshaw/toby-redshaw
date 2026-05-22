@@ -279,8 +279,8 @@ function FloatingMenu({ current }) {
     return () => { document.removeEventListener('mousedown', onClick); document.removeEventListener('keydown', onKey); };
   }, []);
   const items = [
-    { key:'home',     label:'Home',     href:'index.html' },
-    { key:'articles', label:'Articles', href:'blog.html'  },
+    { key:'home',     label:'Home',     href:'/' },
+    { key:'articles', label:'Articles', href:'/blog'  },
   ];
   return (
     <div ref={ref} style={{ position:'fixed', top:18, right:18, zIndex:300 }}>
@@ -828,7 +828,7 @@ function Writing({ posts }) {
       <div className="sect-label reveal">05 / WRITING</div>
       <div className="reveal d1">
         {posts.map((p,i)=>(
-          <a key={i} href={`article.html?slug=${p.slug}`} className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
+          <a key={i} href={`/article?slug=${p.slug}`} className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
             <span className="post-date">{hovDate[i] !== undefined ? hovDate[i] + (hovDate[i]?.length < p.date.length ? '▌' : '') : p.date}</span>
             <div style={{ flex:1 }}>
               <div className="post-title">{p.title}</div>
@@ -838,7 +838,7 @@ function Writing({ posts }) {
           </a>
         ))}
         <div style={{ marginTop:28, display:'flex', alignItems:'center', gap:14 }}>
-          <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'#0a1a2e', background:'var(--accent)', padding:'11px 20px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'background var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.background='var(--accent-hover)'} onMouseLeave={e=>e.currentTarget.style.background='var(--accent)'}>Read all writing <span>→</span></a>
+          <a href="/blog" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'#0a1a2e', background:'var(--accent)', padding:'11px 20px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'background var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.background='var(--accent-hover)'} onMouseLeave={e=>e.currentTarget.style.background='var(--accent)'}>Read all writing <span>→</span></a>
           <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, color:'var(--fg-faint)', letterSpacing:'0.12em', textTransform:'uppercase' }}>{posts.length}+ posts</span>
         </div>
       </div>

@@ -114,7 +114,7 @@ function SidebarNav() {
   const go = (id) => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.offsetTop - 28, behavior: 'smooth' }); };
   return (
     <nav style={{ position:'fixed', left:0, top:0, bottom:0, width:76, display:'flex', flexDirection:'column', alignItems:'center', padding:'26px 0', borderRight:'1px solid rgba(240,235,226,0.06)', zIndex:100, gap:0 }}>
-      <a href="index.html" className="hoverable" style={{ background:'none', border:'none', cursor:'none', marginBottom:32, padding:0, textDecoration:'none' }}>
+      <a href="/" className="hoverable" style={{ background:'none', border:'none', cursor:'none', marginBottom:32, padding:0, textDecoration:'none' }}>
         {scrolled ? (
           <span className="tr-mark" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:15, fontWeight:500, letterSpacing:'0.2em', color:'var(--fg-bright)' }}>T<span style={{ color:'var(--accent)' }}>·</span>R</span>
         ) : (
@@ -136,7 +136,7 @@ function SidebarNav() {
           );
         })}
       </div>
-      <a href="index.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase', textDecoration:'none', writingMode:'vertical-rl', transform:'rotate(180deg)' }}>← home</a>
+      <a href="/" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase', textDecoration:'none', writingMode:'vertical-rl', transform:'rotate(180deg)' }}>← home</a>
     </nav>
   );
 }
@@ -212,8 +212,8 @@ function FloatingMenu({ current }) {
     return () => { document.removeEventListener('mousedown', onClick); document.removeEventListener('keydown', onKey); };
   }, []);
   const items = [
-    { key:'home',     label:'Home',     href:'index.html' },
-    { key:'articles', label:'Articles', href:'blog.html'  },
+    { key:'home',     label:'Home',     href:'/' },
+    { key:'articles', label:'Articles', href:'/blog'  },
   ];
   return (
     <div ref={ref} style={{ position:'fixed', top:18, right:18, zIndex:300 }}>
@@ -328,7 +328,7 @@ function Featured({ posts }) {
   return (
     <section id="featured">
       <div className="sect-label reveal">FEATURED</div>
-      <a href={`article.html?slug=${p.slug}`} className="reveal d1 hoverable" style={{ display:'block', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'42px 38px', textDecoration:'none', position:'relative', overflow:'hidden' }}>
+      <a href={`/article?slug=${p.slug}`} className="reveal d1 hoverable" style={{ display:'block', background:'#ff6b5b', borderRadius:'var(--r-md)', padding:'42px 38px', textDecoration:'none', position:'relative', overflow:'hidden' }}>
         <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.14em', color:'rgba(13,31,53,0.65)', marginBottom:24 }}>{p.date} · {p.read} read</div>
         <h2 style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'clamp(38px,4.6vw,68px)', lineHeight:1.02, letterSpacing:'-0.02em', color:'#0a1a2e', marginBottom:22, maxWidth:780 }}>{p.title}</h2>
         <p style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:300, fontSize:'var(--fs-md)', lineHeight:1.6, color:'rgba(13,31,53,0.78)', maxWidth:600, marginBottom:28 }}>{p.sub}</p>
@@ -343,7 +343,7 @@ function Featured({ posts }) {
   );
 }
 
-function Index({ posts, tags }) {
+function Index({ posts, tags, outro }) {
   const [activeTag, setActiveTag] = useState('All');
   const [hovDate, setHovDate] = useState({});
   const timers = useRef({});
@@ -375,7 +375,7 @@ function Index({ posts, tags }) {
           <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'var(--fg-faint)', padding:'40px 0', letterSpacing:'0.1em', textTransform:'uppercase' }}>No posts under "{activeTag}" yet.</div>
         )}
         {filtered.map((p,i)=>(
-          <a key={p.slug} href={`article.html?slug=${p.slug}`} className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
+          <a key={p.slug} href={`/article?slug=${p.slug}`} className="post-row hoverable" onMouseEnter={()=>startType(i,p.date)} onMouseLeave={()=>stopType(i)} style={{ display:'flex', textDecoration:'none' }}>
             <span className="post-date">{hovDate[i] !== undefined ? hovDate[i] + (hovDate[i]?.length < p.date.length ? '▌' : '') : p.date}</span>
             <div style={{ flex:1 }}>
               <div className="post-title">{p.title}</div>
@@ -389,8 +389,8 @@ function Index({ posts, tags }) {
         ))}
       </div>
       <div style={{ marginTop:48, paddingTop:32, borderTop:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
-        <a href="index.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'#0a1a2e', background:'var(--accent)', padding:'11px 20px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'background var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.background='var(--accent-hover)'} onMouseLeave={e=>e.currentTarget.style.background='var(--accent)'}><span>←</span> Back to portfolio</a>
-        <span style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-md)', color:'var(--fg-muted)' }}>That's everything for now.</span>
+        <a href="/" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'#0a1a2e', background:'var(--accent)', padding:'11px 20px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'background var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.background='var(--accent-hover)'} onMouseLeave={e=>e.currentTarget.style.background='var(--accent)'}><span>←</span> Back to portfolio</a>
+        <span style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-md)', color:'var(--fg-muted)' }}>{outro || "That's everything for now."}</span>
       </div>
     </section>
   );
@@ -416,7 +416,7 @@ function App() {
       <div className="page">
         <Hero blog={data.site.blog} />
         <Featured posts={data.posts} />
-        <Index posts={data.posts} tags={data.site.blog.tags} />
+        <Index posts={data.posts} tags={data.site.blog.tags} outro={data.site.blog.outro} />
       </div>
     </>
   );

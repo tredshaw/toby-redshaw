@@ -99,7 +99,7 @@ function SidebarNav() {
   }, []);
   return (
     <nav style={{ position:'fixed', left:0, top:0, bottom:0, width:76, display:'flex', flexDirection:'column', alignItems:'center', padding:'26px 0', borderRight:'1px solid rgba(240,235,226,0.06)', zIndex:100, gap:0 }}>
-      <a href="index.html" className="hoverable" style={{ background:'none', border:'none', cursor:'none', marginBottom:32, padding:0, textDecoration:'none' }}>
+      <a href="/" className="hoverable" style={{ background:'none', border:'none', cursor:'none', marginBottom:32, padding:0, textDecoration:'none' }}>
         {scrolled ? (
           <span className="tr-mark" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:15, fontWeight:500, letterSpacing:'0.2em', color:'var(--fg-bright)' }}>T<span style={{ color:'var(--accent)' }}>·</span>R</span>
         ) : (
@@ -111,7 +111,7 @@ function SidebarNav() {
         )}
       </a>
       <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:18 }}>
-        <a href="blog.html" className="hoverable" title="All writing" style={{ textDecoration:'none', display:'flex', flexDirection:'column', alignItems:'center', gap:3 }}>
+        <a href="/blog" className="hoverable" title="All writing" style={{ textDecoration:'none', display:'flex', flexDirection:'column', alignItems:'center', gap:3 }}>
           <div style={{ width:7, height:7, borderRadius:'50%', border:'1px solid var(--border-strong)' }} />
           <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, letterSpacing:'0.12em', color:'var(--fg-faint)' }}>IDX</span>
         </a>
@@ -120,7 +120,7 @@ function SidebarNav() {
           <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:8, letterSpacing:'0.12em', color:'var(--accent)' }}>RD</span>
         </div>
       </div>
-      <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase', textDecoration:'none', writingMode:'vertical-rl', transform:'rotate(180deg)' }}>← all writing</a>
+      <a href="/blog" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, color:'var(--fg-muted)', letterSpacing:'0.14em', textTransform:'uppercase', textDecoration:'none', writingMode:'vertical-rl', transform:'rotate(180deg)' }}>← all writing</a>
     </nav>
   );
 }
@@ -194,8 +194,8 @@ function FloatingMenu({ current }) {
     return () => { document.removeEventListener('mousedown', onClick); document.removeEventListener('keydown', onKey); };
   }, []);
   const items = [
-    { key:'home',     label:'Home',     href:'index.html' },
-    { key:'articles', label:'Articles', href:'blog.html'  },
+    { key:'home',     label:'Home',     href:'/' },
+    { key:'articles', label:'Articles', href:'/blog'  },
   ];
   return (
     <div ref={ref} style={{ position:'fixed', top:18, right:18, zIndex:300 }}>
@@ -292,11 +292,11 @@ function Article({ post }) {
   return (
     <article className="article-wrap">
       <div className="reveal" style={{ marginBottom:32, display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
-        <a href="blog.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}><span>←</span> All writing</a>
-        <a href="index.html" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}>Portfolio home</a>
+        <a href="/blog" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}><span>←</span> All writing</a>
+        <a href="/" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'8px 14px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:7, transition:'border-color var(--dur-base), color var(--dur-base)' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent)';e.currentTarget.style.color='var(--accent)';}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--fg)';}}>Portfolio home</a>
       </div>
       {!post ? (
-        <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-2xl)', color:'var(--fg-muted)', marginTop:80 }}>Post not found. <a href="blog.html" style={{ color:'var(--accent)' }}>Back to writing →</a></div>
+        <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-2xl)', color:'var(--fg-muted)', marginTop:80 }}>Post not found. <a href="/blog" style={{ color:'var(--accent)' }}>Back to writing →</a></div>
       ) : (
         <>
           <header className="reveal d1" style={{ marginBottom:48 }}>
@@ -319,18 +319,18 @@ function Footer({ prev, next }) {
       <div className="sect-label reveal">CONTINUE</div>
       <div className="reveal d1" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
         {prev ? (
-          <a href={`article.html?slug=${prev.slug}`} className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
+          <a href={`/article?slug=${prev.slug}`} className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
             <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>← Previous · {prev.date}</div>
             <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{prev.title}</div>
           </a>
         ) : <div />}
         {next ? (
-          <a href={`article.html?slug=${next.slug}`} className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
+          <a href={`/article?slug=${next.slug}`} className="hoverable" style={{ background:'var(--bg-elevated)', border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>
             <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:10 }}>Next · {next.date} →</div>
             <div style={{ fontFamily:"'Fraunces',serif", fontWeight:300, fontSize:'var(--fs-lg)', color:'var(--fg-bright)', lineHeight:1.25 }}>{next.title}</div>
           </a>
         ) : (
-          <a href="blog.html" className="hoverable" style={{ background:'transparent', border:'1px dashed var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right', display:'flex', flexDirection:'column', justifyContent:'center' }}>
+          <a href="/blog" className="hoverable" style={{ background:'transparent', border:'1px dashed var(--border)', borderRadius:'var(--r-md)', padding:'20px 22px', textDecoration:'none', textAlign:'right', display:'flex', flexDirection:'column', justifyContent:'center' }}>
             <div style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg-muted)', marginBottom:6 }}>End of feed →</div>
             <div style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-md)', color:'var(--fg-muted)' }}>See all writing</div>
           </a>

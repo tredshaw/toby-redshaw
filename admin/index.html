@@ -216,8 +216,62 @@
       );
     }
 
+    // ---- CV UPLOADER ----
+    function CVUploader({ cvHref, setToast }) {
+      const [busy, setBusy] = useState(false);
+      const [filename, setFilename] = useState('');
+      async function onPick(e) {
+        const file = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+          setToast({ msg: 'Please choose a PDF file.', error: true });
+          return;
+        }
+        setFilename(file.name);
+        setBusy(true);
+        try {
+          const buf = await file.arrayBuffer();
+          let binary = '';
+          const bytes = new Uint8Array(buf);
+          const chunk = 0x8000;
+          for (let i = 0; i < bytes.length; i += chunk) {
+            binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+          }
+          const content = btoa(binary);
+          const r = await fetch('/api/upload-asset', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+            body: JSON.stringify({ key: 'cv', content }),
+          });
+          if (r.status === 401) { clearToken(); throw new Error('Session expired — please log in again.'); }
+          if (!r.ok) {
+            const d = await r.json().catch(() => ({}));
+            throw new Error(d.error || 'Upload failed');
+          }
+          setToast({ msg: 'CV uploaded — Vercel will redeploy shortly.' });
+        } catch (err) {
+          setToast({ msg: err.message, error: true });
+        } finally {
+          setBusy(false);
+        }
+      }
+      return (
+        <div className="section">
+          <h2>CV / Resume</h2>
+          <div className="muted" style={{ marginBottom: 12 }}>
+            Replaces <code>{cvHref || '/assets/cv.pdf'}</code> — the file linked from the "Download CV" button on the homepage.
+          </div>
+          <a href={cvHref || '/assets/cv.pdf'} target="_blank" rel="noopener" style={{ fontSize: 12 }}>View current CV ↗</a>
+          <label style={{ marginTop: 16 }}>Upload new PDF</label>
+          <input type="file" accept="application/pdf" onChange={onPick} disabled={busy} />
+          {busy && <div className="muted" style={{ marginTop: 8 }}>Uploading {filename}…</div>}
+        </div>
+      );
+    }
+
     // ---- SITE EDITOR ----
-    function SiteEditor({ data, onChange }) {
+    function SiteEditor({ data, onChange, setToast }) {
       const set = (path, v) => {
         const next = JSON.parse(JSON.stringify(data));
         const keys = path.split('.');
@@ -310,6 +364,8 @@
               <Field label="CTA" value={hero.available?.cta} onChange={v => set('hero.available.cta', v)} />
             </div>
           </div>
+
+          <CVUploader cvHref={about.cvHref} setToast={setToast} />
 
           <div className="section">
             <h2>About</h2>
@@ -405,9 +461,11 @@
           </div>
 
           <div className="section">
-            <h2>Blog Page Copy</h2>
-            <Field label="Title" value={blog.title} onChange={v => set('blog.title', v)} />
+            <h2>Articles Page Copy</h2>
+            <div className="muted" style={{ marginBottom: 8 }}>Shown on the /blog "Writing · Index" page.</div>
+            <Field label="Title (last word is italicised in coral)" value={blog.title} onChange={v => set('blog.title', v)} />
             <Field label="Intro" value={blog.intro} onChange={v => set('blog.intro', v)} textarea rows={3} />
+            <Field label="Outro (footer line under the post list)" value={blog.outro} onChange={v => set('blog.outro', v)} />
             <CSVField label="Tags (comma-separated)" value={blog.tags} onChange={v => set('blog.tags', v)} />
           </div>
         </div>
@@ -552,7 +610,7 @@
 
       return (
         <div className="container">
-          <EditorCmp data={data} onChange={d => { setData(d); setDirty(true); }} />
+          <EditorCmp data={data} onChange={d => { setData(d); setDirty(true); }} setToast={setToast} />
           <div className="save-bar">
             <button type="button" onClick={load} disabled={saving}>Discard changes</button>
             <button className="primary" type="button" onClick={save} disabled={saving || !dirty}>
