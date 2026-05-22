@@ -366,7 +366,7 @@ function Index({ posts, tags, outro }) {
         {tags.map(t => {
           const on = t === activeTag;
           return (
-            <button key={t} onClick={()=>setActiveTag(t)} className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.12em', padding:'6px 12px', borderRadius:'var(--r-pill)', border:`1px solid ${on?'var(--accent)':'var(--border)'}`, background: on?'rgba(62,207,178,0.12)':'transparent', color: on?'var(--accent)':'var(--fg-muted)', cursor:'none', transition:'all var(--dur-base)' }}>{t}</button>
+            <button key={t} onClick={()=>setActiveTag(on?'All':t)} className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9.5, textTransform:'uppercase', letterSpacing:'0.12em', padding:'6px 12px', borderRadius:'var(--r-pill)', border:`1px solid ${on?'var(--accent)':'var(--border)'}`, background: on?'rgba(62,207,178,0.12)':'transparent', color: on?'var(--accent)':'var(--fg-muted)', cursor:'none', transition:'all var(--dur-base)' }}>{t}</button>
           );
         })}
       </div>
