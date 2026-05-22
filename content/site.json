@@ -135,9 +135,18 @@
     "today": {
       "label": "TODAY",
       "items": [
-        ["60 min", "endurance bike"],
-        ["3 km", "easy swim"],
-        ["20 min", "core + mobility"]
+        [
+          "60 min",
+          "endurance bike"
+        ],
+        [
+          "3 km",
+          "easy swim"
+        ],
+        [
+          "20 min",
+          "core + mobility"
+        ]
       ]
     },
     "quote": {
@@ -163,7 +172,7 @@
   },
   "roles": [
     "ENGINEER",
-    "ANALYST",
+    "BUSINESS ANALYST",
     "BUILDER",
     "TRIATHLETE",
     "PRODUCER"
