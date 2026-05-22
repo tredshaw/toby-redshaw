@@ -88,7 +88,7 @@
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 
 <script type="text/babel">
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useRef, useMemo } = React;
 
 function SidebarNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -125,13 +125,47 @@ function SidebarNav() {
   );
 }
 
-const TCMDS = {
-  help:['Available commands:','  about · projects · blog · contact · clear · exit'],
-  about:['Trained as an economist. Mostly writes Python now.'],
-  projects:['Lab2Launch ——— IN PROGRESS · 2026','Eddy ——————— SHIPPED · 2024'],
-  blog:['On forecasting under uncertainty     · 2026-04-12','Three months of training, one DNF   · 2026-03-08'],
-  contact:["toby@redshaw.me"],
-};
+function buildTCmds(data) {
+  if (!data) return { help:['Loading…'] };
+  const { site, projects, posts } = data;
+  const pad = (s, n) => (s + ' '.repeat(n)).slice(0, n);
+  const stripFmt = s => s.replace(/[\u{1D400}-\u{1D7FF}]/gu, ch => {
+    const code = ch.codePointAt(0);
+    if (code >= 0x1D400 && code <= 0x1D433) return String.fromCharCode(65 + ((code - 0x1D400) % 26));
+    if (code >= 0x1D434 && code <= 0x1D467) return String.fromCharCode(65 + ((code - 0x1D434) % 26));
+    return ch;
+  });
+  return {
+    help: ['Available commands:', '  about · projects · experience · now · contact · blog · clear · exit'],
+    about: [
+      'Toby Redshaw — Business Analyst at Podium Analytics.',
+      'MEng Biomedical Engineering (1st Class), Imperial College London.',
+      'Based in London. Training for Ironman 70.3 Costa Navarino, Oct 2026.',
+      '',
+      'Building Lab2Launch (investor-readiness for deep-tech) and Eddy (swim',
+      'coaching for adult beginners). Looking for roles at the intersection',
+      'of AI and impact — ideally healthcare.',
+    ],
+    projects: (projects || []).flatMap(p => [
+      `${pad(p.title, 38)} · ${p.status}`,
+      `  ${p.desc}`,
+      `  [${p.tags.join(', ')}]`,
+      '',
+    ]).slice(0, -1),
+    experience: site.experience.map(j =>
+      `${pad(j.role, 30)} ${pad(j.co, 22)} · ${j.years}${j.current ? '  (now)' : ''}`
+    ),
+    now: site.now.map(n => `${pad(n.label.toLowerCase(), 10)}· ${n.main}${n.sub ? ' — ' + n.sub : ''}`),
+    contact: [
+      site.contact.blurb,
+      '',
+      ...site.contact.links.map(l => `${pad(l.label.toLowerCase(), 10)}· ${l.href.replace(/^mailto:/, '')}`),
+    ],
+    blog: posts && posts.length
+      ? posts.map(p => `${pad(stripFmt(p.title).slice(0, 56), 56)} · ${p.date}`)
+      : ['No posts yet.'],
+  };
+}
 function ThemeToggle() {
   const [theme, setTheme] = useState('dark');
   useEffect(() => {
@@ -232,12 +266,22 @@ function FloatingMenu({ current }) {
   );
 }
 
-function Terminal() {
+function Terminal({ data: dataProp }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [hist, setHist] = useState([]);
+  const [data, setData] = useState(dataProp || null);
   const inputRef = useRef(null);
   const outRef = useRef(null);
+  useEffect(() => {
+    if (data) return;
+    Promise.all([
+      fetch('content/site.json').then(r => r.json()),
+      fetch('content/projects.json').then(r => r.json()),
+      fetch('content/posts.json').then(r => r.json()),
+    ]).then(([site, projects, posts]) => setData({ site, projects: projects.projects, posts: posts.posts })).catch(() => {});
+  }, []);
+  const cmds = useMemo(() => buildTCmds(data), [data]);
   useEffect(() => {
     const onKey = e => {
       if (e.key === '/' && !open && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) { e.preventDefault(); setOpen(true); }
@@ -253,7 +297,7 @@ function Terminal() {
     if (!k) return;
     if (k === 'clear') { setHist([]); setInput(''); return; }
     if (k === 'exit') { setOpen(false); setInput(''); return; }
-    const res = TCMDS[k] ? TCMDS[k].map(t => ({ t })) : [{ e:true, t:`command not found: ${cmd}  (try 'help')` }];
+    const res = cmds[k] ? cmds[k].map(t => ({ t })) : [{ e:true, t:`command not found: ${cmd}  (try 'help')` }];
     setHist(h => [...h, { p:true, t:cmd }, ...res, { t:'' }]);
     setInput('');
   };
