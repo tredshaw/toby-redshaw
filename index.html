@@ -973,8 +973,14 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: 0.08 });
 const attachReveals = () => document.querySelectorAll('.reveal:not(.shown)').forEach(el => io.observe(el));
 attachReveals();
-// Re-attach after React renders
-setTimeout(attachReveals, 500);
+// Re-attach as React renders. A MutationObserver covers slow first loads
+// where Babel transpile + mount finishes after the old 500ms timeout —
+// without this, .reveal nodes never get observed and the page stays blank.
+const mo = new MutationObserver(() => attachReveals());
+mo.observe(document.body, { childList: true, subtree: true });
+setTimeout(() => mo.disconnect(), 10000);
+// Belt-and-braces retries in case the observer misses a batch.
+[100, 500, 1500, 3000].forEach(t => setTimeout(attachReveals, t));
 </script>
 </body>
 </html>
