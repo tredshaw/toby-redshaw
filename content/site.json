@@ -19,18 +19,14 @@
     ]
   },
   "blog": {
-    "title": "Notes & essays.",
-    "intro": "Mostly working notes. Some essays. Occasional race reports. Updated when I have something to say, not on a schedule.",
+    "title": "Notes, thoughts, and ideas.",
+    "intro": "Mostly posting thoughts I have or about things I'm passionate about.",
     "tags": [
-      "All",
-      "Forecasting",
-      "Economics",
+      "Creative",
       "Sport",
-      "Data",
-      "Work",
-      "Process",
-      "Product",
-      "Lab2Launch"
+      "Music",
+      "Thoughts",
+      "Building"
     ]
   },
   "experience": [
