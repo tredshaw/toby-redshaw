@@ -5,7 +5,7 @@
     "footer": "© 2026 Toby Redshaw",
     "links": [
       {
-        "label": "toby@redshaw.me",
+        "label": "EMAIL",
         "href": "mailto:toby@redshaw.me"
       },
       {
@@ -59,7 +59,7 @@
       "Trained as a swimmer. Did a degree in Biomedical Engineering at the 2nd best University in the world (25', 26'). Mostly start crazy ideas now. After 2 sinus surgeries, I'm now pushing myself for a sub-5 Ironman 70.3 (I've never completed a triathlon). ",
       "The work I do sits at the edge of analysis and building — not quite data science, not quite engineering, but usually the thing that makes the other things possible. I've shipped forecasting tools, platform infrastructure, and the occasional spreadsheet that outlasted the project."
     ],
-    "pullQuote": "The catch was making spinout paperwork legible to scientists.",
+    "pullQuote": "",
     "cvHref": "/assets/cv.pdf",
     "currently": [
       {
@@ -116,15 +116,15 @@
       "progress": 5,
       "raceLabel": "70.3 · OCT 2026 · 23 WKS",
       "raceDate": "2026-10-04",
-      "raceStart": "2026-01-01"
+      "raceStart": "2026-05-11"
     },
     "stats": [
       [
-        "47k",
+        "470,00",
         "tokens used"
       ],
       [
-        "3",
+        "2",
         "products in development"
       ],
       [
@@ -133,26 +133,26 @@
       ]
     ],
     "today": {
-      "label": "TODAY",
+      "label": "THIS WEEK",
       "items": [
         [
-          "60 min",
-          "endurance bike"
+          "2.5 hours",
+          "cycling"
         ],
         [
-          "3 km",
-          "easy swim"
+          "2 hours",
+          "strength training"
         ],
         [
-          "20 min",
-          "core + mobility"
+          "1.5 hours",
+          "running"
         ]
       ]
     },
     "quote": {
-      "label": "MANTRA",
-      "text": "Discipline equals freedom.",
-      "by": "Jocko Willink"
+      "label": "QUOTE",
+      "text": "Hell isn't a fire pit but a museum of regret.",
+      "by": "Exurb1a - The Fifth Science"
     },
     "music": {
       "label": "TOBY'S MIX",
@@ -167,7 +167,7 @@
     "available": {
       "label": "AVAILABLE",
       "headline": "Open to work.",
-      "cta": "toby@redshaw.me →"
+      "cta": "EMAIL ME →"
     }
   },
   "roles": [
