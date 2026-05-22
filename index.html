@@ -727,7 +727,7 @@ function About({ site }) {
           <p style={{ fontFamily:"'Fraunces',serif", fontStyle:'italic', fontWeight:300, fontSize:'var(--fs-xl)', lineHeight:1.35, color:'var(--secondary-accent)', marginBottom:24 }}>
             "{site.about.pullQuote}"
           </p>
-          <a href={site.about.cvHref} className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'9px 16px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>Download CV →</a>
+          <a href={site.about.cvHref} download="Toby Redshaw CV.pdf" className="hoverable" style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', letterSpacing:'0.12em', color:'var(--fg)', border:'1px solid var(--border)', padding:'9px 16px', borderRadius:'var(--r-md)', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:8, transition:'border-color var(--dur-base)' }} onMouseEnter={e=>e.currentTarget.style.borderColor='var(--border-strong)'} onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}>Download CV →</a>
         </div>
         <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
           <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
