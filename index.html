@@ -61,7 +61,7 @@
     .reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--dur-reveal) var(--ease-out-quart), transform var(--dur-reveal) var(--ease-out-quart); }
     .reveal.shown { opacity: 1; transform: none; }
     .d1 { transition-delay: 80ms; } .d2 { transition-delay: 160ms; } .d3 { transition-delay: 240ms; }
-    .ticker-strip { display: inline-block; transform: translateX(var(--strip-from-x, 100%)); }
+    .ticker-strip { display: inline-flex; align-items: center; transform: translateX(var(--strip-from-x, 100%)); }
     .reveal.shown .ticker-strip { animation: ticker-strip-in 1.6s var(--ease-out-quart) 0.2s forwards; }
     .reveal.shown .ticker-inner { animation: ticker 22s linear 1.9s infinite; }
     @keyframes ticker-strip-in { from { transform: translateX(var(--strip-from-x, 100%)); } to { transform: translateX(0); } }
