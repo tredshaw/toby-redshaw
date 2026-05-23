@@ -144,6 +144,181 @@
     .deck-marquee-track { display: inline-block; white-space: nowrap; animation: deckMarquee 14s linear infinite; }
     @keyframes deckMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
+    /* ── /party mode ──────────────────────────────────────────── */
+    /* Confetti — shot horizontally, peaks mid-flight, then gravity pulls it to the floor. */
+    .party-confetti { position: fixed; top: var(--y, 50%); width: 10px; height: 14px; pointer-events: none; will-change: transform, opacity; z-index: 9996; border-radius: 1px; opacity: 0; }
+    .party-confetti.left  { left: -16px;  animation: partyArcR var(--dur, 4.2s) cubic-bezier(0.32, 0.04, 0.66, 1) forwards; }
+    .party-confetti.right { right: -16px; animation: partyArcL var(--dur, 4.2s) cubic-bezier(0.32, 0.04, 0.66, 1) forwards; }
+    @keyframes partyArcR {
+      0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      6%   { opacity: 1; }
+      35%  { transform: translate(calc(var(--tx, 70vw) * 0.55), var(--peak, -28vh)) rotate(calc(var(--rot, 720deg) * 0.4)); opacity: 1; }
+      85%  { opacity: 1; }
+      100% { transform: translate(var(--tx, 70vw), calc(100vh - var(--y, 50vh) + 4vh)) rotate(var(--rot, 720deg)); opacity: 0; }
+    }
+    @keyframes partyArcL {
+      0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      6%   { opacity: 1; }
+      35%  { transform: translate(calc(var(--tx, 70vw) * -0.55), var(--peak, -28vh)) rotate(calc(var(--rot, 720deg) * -0.4)); opacity: 1; }
+      85%  { opacity: 1; }
+      100% { transform: translate(calc(var(--tx, 70vw) * -1), calc(100vh - var(--y, 50vh) + 4vh)) rotate(calc(var(--rot, 720deg) * -1)); opacity: 0; }
+    }
+    /* Disco ball — drops in, hangs, then is pulled back up. */
+    .party-disco-wrap { position: fixed; top: 0; left: 50%; z-index: 9997; pointer-events: none; transform: translate(-50%, -260px); }
+    .party-disco-wrap.dropping { animation: discoDrop 1.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+    .party-disco-wrap.holding  { transform: translate(-50%, 20px); }
+    .party-disco-wrap.retracting { animation: discoRetract 1.2s cubic-bezier(0.6, -0.05, 0.85, 0.4) forwards; }
+    @keyframes discoDrop {
+      0%   { transform: translate(-50%, -260px); }
+      70%  { transform: translate(-50%, 30px); }
+      85%  { transform: translate(-50%, 10px); }
+      100% { transform: translate(-50%, 20px); }
+    }
+    @keyframes discoRetract {
+      0%   { transform: translate(-50%, 20px); }
+      15%  { transform: translate(-50%, 34px); }
+      100% { transform: translate(-50%, -280px); }
+    }
+    .party-disco-rope { width: 2px; height: 80px; margin: 0 auto; background: linear-gradient(180deg, rgba(240,235,226,0.35), rgba(240,235,226,0.12)); }
+    .party-disco-ball {
+      width: 134px; height: 134px; border-radius: 50%; margin: -2px auto 0;
+      position: relative; overflow: hidden;
+      background:
+        /* primary hot spot */
+        radial-gradient(circle at 28% 22%, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 5%, transparent 17%),
+        /* bounce-light secondary highlight */
+        radial-gradient(circle at 65% 48%, rgba(255,255,255,0.28) 0%, transparent 14%),
+        /* deep shadow side */
+        radial-gradient(circle at 78% 82%, rgba(0,4,12,0.95) 0%, rgba(0,4,12,0.42) 26%, transparent 54%),
+        /* sphere body — offset center for unmistakable 3D feel */
+        radial-gradient(circle at 32% 28%, #f8f5ee 0%, #c8d0dc 8%, #8590a6 28%, #404a60 58%, #0a0e18 100%);
+      box-shadow:
+        0 0 56px 6px rgba(255,255,255,0.42),
+        0 0 110px 22px rgba(62,207,178,0.36),
+        0 22px 44px rgba(0,0,0,0.55),
+        inset -28px -34px 64px rgba(0,4,12,0.78),
+        inset 16px 18px 34px rgba(255,255,255,0.22);
+      animation: discoSpin 3.2s linear infinite;
+    }
+    /* SVG wireframe — true latitude/longitude ellipses, drawn over the shaded sphere
+       so the grid actually appears to wrap around a 3D surface. */
+    .party-disco-ball .disco-svg {
+      position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+      mix-blend-mode: multiply; opacity: 0.85;
+    }
+    .party-disco-ball .disco-svg .grid-line { fill: none; stroke: rgba(0,4,12,0.65); stroke-width: 0.55; }
+    .party-disco-ball .disco-svg .grid-line-soft { fill: none; stroke: rgba(0,4,12,0.4); stroke-width: 0.4; }
+    /* Specular sparkles + a curved meridian hint via overlaid radial shading. */
+    .party-disco-ball::after {
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+      background-image:
+        radial-gradient(ellipse 36% 70% at 35% 50%, rgba(255,255,255,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 36% 70% at 65% 50%, rgba(0,4,12,0.18) 0%, transparent 60%),
+        radial-gradient(circle at 22% 22%, rgba(255,255,255,0.95) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 32%, rgba(255,255,255,0.85) 0 1.6px, transparent 2.6px),
+        radial-gradient(circle at 55% 70%, rgba(255,255,255,0.85) 0 1.6px, transparent 2.6px),
+        radial-gradient(circle at 30% 60%, rgba(255,255,255,0.72) 0 1.2px, transparent 2.2px),
+        radial-gradient(circle at 80% 78%, rgba(255,255,255,0.85) 0 1.6px, transparent 2.6px),
+        radial-gradient(circle at 18% 82%, rgba(255,255,255,0.6) 0 1px, transparent 2px),
+        radial-gradient(circle at 88% 22%, rgba(255,255,255,0.55) 0 1px, transparent 2px);
+      mix-blend-mode: screen; opacity: 1;
+      animation: discoSparkle 1.4s ease-in-out infinite alternate;
+    }
+    @keyframes discoSpin { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+    @keyframes discoSparkle { from { opacity: 0.65; } to { opacity: 1; } }
+    .party-disco-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9995;
+      background: radial-gradient(circle at 50% 12%, rgba(62,207,178,0.18), transparent 40%);
+      animation: discoGlow 2.2s ease-in-out infinite alternate;
+    }
+    @keyframes discoGlow { from { opacity: 0.6; } to { opacity: 1; } }
+
+    /* Stage strobes — row of lamps across the bottom shooting coloured beams up the page. */
+    .party-strobes { position: fixed; left: 0; right: 0; bottom: 0; height: 0; pointer-events: none; z-index: 9994; opacity: 0; transition: opacity 320ms ease-out; }
+    .party-strobes.on { opacity: 1; }
+    .party-strobes.off { opacity: 0; }
+    .party-strobe { position: absolute; bottom: 0; transform: translateX(-50%); transform-origin: 50% 100%; }
+    .party-strobe .beam {
+      position: absolute; left: 50%; bottom: 12px;
+      width: 18vw; height: 110vh;
+      transform: translateX(-50%) rotate(var(--ang, 0deg));
+      transform-origin: 50% 100%;
+      background: linear-gradient(0deg, var(--c, #3ecfb2) 0%, color-mix(in srgb, var(--c, #3ecfb2) 60%, transparent) 18%, transparent 88%);
+      clip-path: polygon(46% 100%, 54% 100%, 88% 0%, 12% 0%);
+      mix-blend-mode: screen;
+      opacity: var(--beam-op, 0.22);
+      filter: blur(2px);
+      animation: strobeSwing var(--sw, 3.2s) ease-in-out infinite alternate, strobeFlicker var(--fl, 0.18s) steps(2, end) infinite;
+      animation-delay: var(--swd, 0s), var(--fld, 0s);
+    }
+    .party-strobe .head {
+      position: absolute; left: 50%; bottom: 0;
+      width: 26px; height: 16px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #1a1f29 0%, #2a3140 60%, #0a0f18 100%);
+      border-radius: 4px 4px 2px 2px;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .party-strobe .head::after {
+      content: ''; position: absolute; top: 1px; left: 50%; transform: translateX(-50%);
+      width: 14px; height: 6px;
+      background: radial-gradient(ellipse at 50% 30%, var(--c, #3ecfb2) 0%, color-mix(in srgb, var(--c, #3ecfb2) 50%, #000) 70%, #000 100%);
+      border-radius: 50%;
+      box-shadow: 0 0 10px 2px var(--c, #3ecfb2), 0 0 20px 4px color-mix(in srgb, var(--c, #3ecfb2) 40%, transparent);
+      animation: strobeFlicker var(--fl, 0.18s) steps(2, end) infinite;
+      animation-delay: var(--fld, 0s);
+    }
+    @keyframes strobeSwing {
+      0%   { transform: translateX(-50%) rotate(calc(var(--ang, 0deg) - 16deg)); }
+      100% { transform: translateX(-50%) rotate(calc(var(--ang, 0deg) + 16deg)); }
+    }
+    @keyframes strobeFlicker {
+      0%   { opacity: var(--beam-op, 0.22); }
+      50%  { opacity: calc(var(--beam-op, 0.22) * 0.35); }
+      100% { opacity: var(--beam-op, 0.22); }
+    }
+
+    /* Fireworks — rocket rises, flashes, then bursts into coloured particles that fall. */
+    .fw-rocket {
+      position: fixed; left: 0; bottom: 0; width: 2px; height: 14px; z-index: 9996; pointer-events: none;
+      background: linear-gradient(180deg, transparent, var(--c, #f3eee2));
+      box-shadow: 0 0 8px var(--c, #f3eee2);
+      transform: translate(var(--lx, 50vw), 0);
+      animation: fwRise var(--rdur, 0.55s) cubic-bezier(0.22, 0.81, 0.51, 1) forwards;
+    }
+    @keyframes fwRise {
+      0%   { transform: translate(var(--lx, 50vw), 0); opacity: 0.9; }
+      92%  { opacity: 0.9; }
+      100% { transform: translate(var(--lx, 50vw), calc(var(--by, 30vh) - 100vh)); opacity: 0; }
+    }
+    .fw-flash {
+      position: fixed; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; z-index: 9996; pointer-events: none;
+      background: radial-gradient(circle, var(--c, #fff) 0%, color-mix(in srgb, var(--c, #fff) 50%, transparent) 45%, transparent 80%);
+      mix-blend-mode: screen; opacity: 0;
+      transform: translate(calc(var(--lx, 50vw) - 11px), calc(var(--by, 30vh) - 11px)) scale(0.4);
+      animation: fwFlash 0.4s ease-out forwards;
+      animation-delay: var(--rdur, 0.55s);
+    }
+    @keyframes fwFlash {
+      0%   { opacity: 0;   transform: translate(calc(var(--lx, 50vw) - 11px), calc(var(--by, 30vh) - 11px)) scale(0.4); }
+      30%  { opacity: 0.95;transform: translate(calc(var(--lx, 50vw) - 11px), calc(var(--by, 30vh) - 11px)) scale(1.6); }
+      100% { opacity: 0;   transform: translate(calc(var(--lx, 50vw) - 11px), calc(var(--by, 30vh) - 11px)) scale(2.4); }
+    }
+    .fw-particle {
+      position: fixed; left: 0; top: 0; width: var(--s, 4px); height: var(--s, 4px); border-radius: 50%; z-index: 9996; pointer-events: none;
+      background: var(--c, #fff);
+      box-shadow: 0 0 6px var(--c, #fff), 0 0 14px color-mix(in srgb, var(--c, #fff) 40%, transparent);
+      mix-blend-mode: screen; opacity: 0;
+      transform: translate(var(--lx, 50vw), var(--by, 30vh));
+      animation: fwBurst var(--dur, 2s) cubic-bezier(0.16, 0.84, 0.44, 1) forwards;
+      animation-delay: var(--rdur, 0.55s);
+    }
+    @keyframes fwBurst {
+      0%   { transform: translate(var(--lx, 50vw), var(--by, 30vh)); opacity: 0; }
+      6%   { opacity: 1; }
+      55%  { transform: translate(calc(var(--lx, 50vw) + var(--dxm, 0vh)), calc(var(--by, 30vh) + var(--dym, 0vh))); opacity: 1; }
+      100% { transform: translate(calc(var(--lx, 50vw) + var(--dx, 0vh)), calc(var(--by, 30vh) + var(--dy, 0vh))); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -222,6 +397,15 @@ function ThemeToggle() {
     const saved = localStorage.getItem('theme') || 'dark';
     document.documentElement.dataset.theme = saved;
     setTheme(saved);
+  }, []);
+  useEffect(() => {
+    const onParty = () => {
+      document.documentElement.dataset.theme = 'dark';
+      localStorage.setItem('theme', 'dark');
+      setTheme('dark');
+    };
+    window.addEventListener('tr-party', onParty);
+    return () => window.removeEventListener('tr-party', onParty);
   }, []);
   const toggle = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -317,6 +501,290 @@ function FloatingMenu({ current }) {
   );
 }
 
+// ── /party mode overlay ───────────────────────────────────────────────────────
+const PARTY_COLOURS = ['#3ecfb2','#ff6b5b','#2b8bff','#f3eee2','#6adcc4','#ff8a7a','#6bb0ff'];
+const STROBE_COLOURS = ['#3ecfb2','#ff6b5b','#2b8bff','#6adcc4','#ff8a7a','#6bb0ff'];
+const FW_PALETTES = {
+  seafoam: ['#3ecfb2','#6adcc4','#2fb89c'],
+  coral:   ['#ff6b5b','#ff8a7a','#e85948'],
+  royal:   ['#2b8bff','#6bb0ff','#1d6fe0'],
+  white:   ['#ffffff','#f3eee2','#e8e4d7'],
+  mixA:    ['#3ecfb2','#ff6b5b','#f3eee2'],
+  mixB:    ['#2b8bff','#3ecfb2','#ffffff'],
+  mixC:    ['#ff6b5b','#f3eee2','#2b8bff'],
+  mixD:    ['#3ecfb2','#2b8bff','#ff8a7a','#ffffff'],
+};
+const FW_PALETTE_KEYS = Object.keys(FW_PALETTES);
+const FW_START_MS = 11000;
+const CONFETTI_REPEAT_MS = 15000;
+const FW_END_MS = 27500;
+const PARTY_TOTAL_MS = 30000;
+const DISCO_DROP_MS = 1400;
+const DISCO_RETRACT_MS = 1200;
+function PartyMode() {
+  const [active, setActive] = useState(false);
+  const [discoPhase, setDiscoPhase] = useState('out'); // 'dropping' | 'holding' | 'retracting' | 'out'
+  const [strobeOn, setStrobeOn] = useState(false);
+  const [pieces, setPieces] = useState([]);
+  const [fireworks, setFireworks] = useState([]);
+  const [remaining, setRemaining] = useState(0);
+  const timersRef = useRef([]);
+  const intervalRef = useRef(null);
+  const clearTimers = () => {
+    timersRef.current.forEach(clearTimeout); timersRef.current = [];
+    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+  };
+  const endParty = () => {
+    clearTimers();
+    setStrobeOn(false);
+    setDiscoPhase('retracting');
+    setRemaining(0);
+    setFireworks([]);
+    try { window.dispatchEvent(new CustomEvent('tr-party-end')); } catch(_){}
+    timersRef.current.push(setTimeout(() => {
+      setActive(false);
+      setDiscoPhase('out');
+      setPieces([]);
+    }, DISCO_RETRACT_MS));
+  };
+  const launchFirework = () => {
+    const id = `fw-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+    const lx = 12 + Math.random() * 76;       // vw
+    const by = 20 + Math.random() * 24;       // vh from top (burst point)
+    const paletteKey = FW_PALETTE_KEYS[Math.floor(Math.random() * FW_PALETTE_KEYS.length)];
+    const palette = FW_PALETTES[paletteKey];
+    const count = 30 + Math.floor(Math.random() * 14);
+    const gravity = 26;                        // vh / s^2
+    const rdur = 0.5 + Math.random() * 0.15;   // rocket rise seconds
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.25;
+      const speed = 11 + Math.random() * 10;   // vh / s
+      const dur = 1.5 + Math.random() * 0.9;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+      const dx = vx * dur;
+      const dy = vy * dur + 0.5 * gravity * dur * dur;
+      const tm = dur * 0.55;
+      const dxm = vx * tm;
+      const dym = vy * tm + 0.5 * gravity * tm * tm;
+      particles.push({
+        i,
+        dx, dy, dxm, dym, dur,
+        c: palette[Math.floor(Math.random() * palette.length)],
+        s: 3 + Math.random() * 2.4,
+      });
+    }
+    const fw = { id, lx, by, rdur, rocketC: palette[0], particles };
+    setFireworks(prev => [...prev, fw]);
+    const lifeMs = (rdur + 2.6) * 1000;
+    timersRef.current.push(setTimeout(() => {
+      setFireworks(prev => prev.filter(f => f.id !== id));
+    }, lifeMs));
+  };
+  const spawnConfetti = () => {
+    const startY = () => Math.random() * 55 + 30;
+    const stamp = `${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+    const next = [];
+    for (let i = 0; i < 110; i++) {
+      const y = startY();
+      next.push({
+        id: `${stamp}-${i}`,
+        side: i % 2 === 0 ? 'left' : 'right',
+        y,
+        tx: 50 + Math.random() * 45,
+        peak: -(18 + Math.random() * 26),
+        rot: 540 + Math.random() * 900,
+        dur: 3.2 + Math.random() * 2.4,
+        delay: Math.random() * 2.2,
+        colour: PARTY_COLOURS[Math.floor(Math.random() * PARTY_COLOURS.length)],
+        w: 5 + Math.random() * 8,
+        h: 8 + Math.random() * 10,
+      });
+    }
+    setPieces(prev => [...prev, ...next]);
+  };
+  useEffect(() => {
+    const onParty = () => {
+      clearTimers();
+      setPieces([]);
+      spawnConfetti();
+      setActive(true);
+      setDiscoPhase('dropping');
+      setStrobeOn(true);
+      const startedAt = Date.now();
+      const totalSec = Math.round(PARTY_TOTAL_MS / 1000);
+      setRemaining(totalSec);
+      intervalRef.current = setInterval(() => {
+        const left = Math.max(0, Math.ceil((PARTY_TOTAL_MS - (Date.now() - startedAt)) / 1000));
+        setRemaining(left);
+        if (left <= 0 && intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+      }, 200);
+      timersRef.current.push(setTimeout(() => setDiscoPhase('holding'), DISCO_DROP_MS));
+      timersRef.current.push(setTimeout(spawnConfetti, CONFETTI_REPEAT_MS));
+      const scheduleFirework = () => {
+        const elapsed = Date.now() - startedAt;
+        if (elapsed > FW_END_MS) return;
+        launchFirework();
+        const nextIn = 700 + Math.random() * 700;
+        const t = setTimeout(scheduleFirework, nextIn);
+        timersRef.current.push(t);
+      };
+      timersRef.current.push(setTimeout(scheduleFirework, FW_START_MS));
+      timersRef.current.push(setTimeout(() => {
+        try { window.dispatchEvent(new CustomEvent('tr-party-end')); } catch(_){}
+      }, PARTY_TOTAL_MS - 2000));
+      timersRef.current.push(setTimeout(() => setStrobeOn(false), PARTY_TOTAL_MS - 400));
+      timersRef.current.push(setTimeout(() => setDiscoPhase('retracting'), PARTY_TOTAL_MS - DISCO_RETRACT_MS));
+      timersRef.current.push(setTimeout(() => {
+        setActive(false);
+        setDiscoPhase('out');
+        setPieces([]);
+        setFireworks([]);
+        setRemaining(0);
+      }, PARTY_TOTAL_MS));
+    };
+    window.addEventListener('tr-party', onParty);
+    return () => { window.removeEventListener('tr-party', onParty); clearTimers(); };
+  }, []);
+  if (!active) return null;
+  const pad2 = (n) => String(Math.max(0, n)).padStart(2, '0');
+  const strobes = [
+    { left: 6,  ang: -22, op: 0.24, sw: 3.4, swd: 0.0, fl: 0.16, fld: 0.0 },
+    { left: 20, ang: -10, op: 0.22, sw: 3.0, swd: 0.4, fl: 0.13, fld: 0.05 },
+    { left: 34, ang:  -4, op: 0.26, sw: 3.6, swd: 0.2, fl: 0.19, fld: 0.02 },
+    { left: 50, ang:   0, op: 0.28, sw: 3.2, swd: 0.6, fl: 0.15, fld: 0.07 },
+    { left: 66, ang:   4, op: 0.26, sw: 3.4, swd: 0.1, fl: 0.17, fld: 0.03 },
+    { left: 80, ang:  10, op: 0.22, sw: 3.0, swd: 0.5, fl: 0.13, fld: 0.06 },
+    { left: 94, ang:  22, op: 0.24, sw: 3.4, swd: 0.3, fl: 0.16, fld: 0.01 },
+  ];
+  return (
+    <>
+      <div
+        aria-label="Party time remaining"
+        style={{
+          position:'fixed', top:18, right:126, zIndex:9999, height:44, padding:'0 6px 0 14px',
+          background:'var(--chrome-bg)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)',
+          border:'1px solid var(--border-strong)', borderRadius:'var(--r-md)',
+          display:'flex', alignItems:'center', justifyContent:'center', gap:10,
+        }}
+      >
+        <span style={{ width:8, height:8, borderRadius:'50%', background:'var(--coral-400)', boxShadow:'0 0 8px var(--coral-400)', animation:'pulse 0.6s ease-in-out infinite alternate' }} />
+        <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:12, fontWeight:500, letterSpacing:'0.14em', color:'var(--fg-bright)', fontVariantNumeric:'tabular-nums' }}>0:{pad2(remaining)}</span>
+        <button
+          onClick={endParty}
+          aria-label="Stop party"
+          className="hoverable"
+          style={{
+            width:32, height:32, background:'transparent', border:'1px solid var(--border-strong)', borderRadius:'var(--r-sm)',
+            cursor:'none', display:'flex', alignItems:'center', justifyContent:'center', padding:0,
+            color:'var(--coral-400)',
+            transition:'border-color var(--dur-base), background var(--dur-base)',
+          }}
+          onMouseEnter={e=>{ e.currentTarget.style.borderColor='var(--coral-400)'; e.currentTarget.style.background='rgba(255,107,91,0.10)'; }}
+          onMouseLeave={e=>{ e.currentTarget.style.borderColor='var(--border-strong)'; e.currentTarget.style.background='transparent'; }}
+        >
+          <svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="9" height="9" rx="1.4" fill="currentColor" />
+          </svg>
+        </button>
+      </div>
+      <div className="party-disco-glow" />
+      <div className={`party-disco-wrap ${discoPhase}`}>
+        <div className="party-disco-rope" />
+        <div className="party-disco-ball">
+          <svg className="disco-svg" viewBox="-50 -50 100 100" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <clipPath id="discoBallClip"><circle cx="0" cy="0" r="49.5" /></clipPath>
+            </defs>
+            <g clipPath="url(#discoBallClip)">
+              {/* Longitudes — vertical great-circle ellipses; rx = R·sin(θ) per longitude angle. */}
+              {[12, 24, 36, 48, 60, 72, 84].map(deg => {
+                const rx = 50 * Math.sin((deg * Math.PI) / 180);
+                return <ellipse key={`lo${deg}`} className="grid-line" cx="0" cy="0" rx={rx} ry="50" />;
+              })}
+              {/* Latitudes — horizontal rings at evenly spaced sphere angles. */}
+              {Array.from({ length: 13 }).map((_, i) => {
+                const deg = -78 + i * 13;
+                const rad = (deg * Math.PI) / 180;
+                const cy = -50 * Math.sin(rad);
+                const rx = 50 * Math.cos(rad);
+                const ry = Math.max(0.9, rx * 0.06);
+                return <ellipse key={`la${deg}`} className="grid-line" cx="0" cy={cy} rx={rx} ry={ry} />;
+              })}
+              {/* A few soft equator/meridian doublers add depth. */}
+              <ellipse className="grid-line-soft" cx="0" cy="0" rx="50" ry="50" />
+              <ellipse className="grid-line-soft" cx="0" cy="0" rx="0.6" ry="50" />
+              <ellipse className="grid-line-soft" cx="0" cy="0" rx="50" ry="0.6" />
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div className={`party-strobes ${strobeOn ? 'on' : 'off'}`}>
+        {strobes.map((s, i) => (
+          <div key={i} className="party-strobe" style={{ left: `${s.left}%` }}>
+            <div className="beam" style={{
+              '--c': STROBE_COLOURS[i % STROBE_COLOURS.length],
+              '--ang': `${s.ang}deg`,
+              '--beam-op': s.op,
+              '--sw': `${s.sw}s`,
+              '--swd': `${s.swd}s`,
+              '--fl': `${s.fl}s`,
+              '--fld': `${s.fld}s`,
+            }} />
+            <div className="head" style={{
+              '--c': STROBE_COLOURS[i % STROBE_COLOURS.length],
+              '--fl': `${s.fl}s`,
+              '--fld': `${s.fld}s`,
+            }} />
+          </div>
+        ))}
+      </div>
+      {fireworks.map(fw => (
+        <React.Fragment key={fw.id}>
+          <span className="fw-rocket" style={{ '--lx': `${fw.lx}vw`, '--by': `${fw.by}vh`, '--rdur': `${fw.rdur}s`, '--c': fw.rocketC }} />
+          <span className="fw-flash"  style={{ '--lx': `${fw.lx}vw`, '--by': `${fw.by}vh`, '--rdur': `${fw.rdur}s`, '--c': fw.rocketC }} />
+          {fw.particles.map(p => (
+            <span
+              key={p.i}
+              className="fw-particle"
+              style={{
+                '--lx': `${fw.lx}vw`,
+                '--by': `${fw.by}vh`,
+                '--dx': `${p.dx}vh`,
+                '--dy': `${p.dy}vh`,
+                '--dxm': `${p.dxm}vh`,
+                '--dym': `${p.dym}vh`,
+                '--dur': `${p.dur}s`,
+                '--rdur': `${fw.rdur}s`,
+                '--c': p.c,
+                '--s': `${p.s}px`,
+              }}
+            />
+          ))}
+        </React.Fragment>
+      ))}
+      {pieces.map(p => (
+        <span
+          key={p.id}
+          className={`party-confetti ${p.side}`}
+          style={{
+            '--y': `${p.y}vh`,
+            '--tx': `${p.tx}vw`,
+            '--peak': `${p.peak}vh`,
+            '--rot': `${p.rot}deg`,
+            '--dur': `${p.dur}s`,
+            background: p.colour,
+            width: `${p.w}px`,
+            height: `${p.h}px`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
 // ── Terminal overlay ──────────────────────────────────────────────────────────
 // Commands are derived from the loaded site/projects/posts content so the
 // terminal always reflects what's actually on the page.
@@ -388,10 +856,17 @@ function Terminal({ data: dataProp }) {
   useEffect(() => { if (outRef.current) outRef.current.scrollTop = outRef.current.scrollHeight; }, [hist]);
   const cmds = useMemo(() => buildTCmds(data), [data]);
   const run = cmd => {
-    const k = cmd.trim().toLowerCase();
+    const k = cmd.trim().toLowerCase().replace(/^\//, '');
     if (!k) return;
     if (k === 'clear') { setHist([]); setInput(''); return; }
     if (k === 'exit') { setOpen(false); setInput(''); return; }
+    if (k === 'party') {
+      window.dispatchEvent(new CustomEvent('tr-party'));
+      setHist(h => [...h, { p:true, t:cmd }, { s:true, t:'🪩 lights down · volume up · let it ride' }, { t:'' }]);
+      setInput('');
+      setTimeout(() => setOpen(false), 400);
+      return;
+    }
     const res = cmds[k] ? cmds[k].map(t => ({ t })) : [{ e:true, t:`command not found: ${cmd}  (try 'help')` }];
     setHist(h => [...h, { p:true, t:cmd }, ...res, { t:'' }]);
     setInput('');
@@ -535,11 +1010,104 @@ function Decks({ label, sub, soundcloudUrl }) {
     return () => { cancelled = true; if (pollIv) clearInterval(pollIv); widgetRef.current = null; };
   }, [soundcloudUrl]);
 
-  // Volume sync + persist
+  const fadingRef = useRef(false);
+  const fadeRafRef = useRef(null);
+  const volRef = useRef(vol);
+  const playingRef = useRef(false);
+  useEffect(() => { volRef.current = vol; }, [vol]);
+  useEffect(() => { playingRef.current = playing; }, [playing]);
+
+  // Volume sync + persist — skipped during programmatic fades (those drive the widget directly).
   useEffect(() => {
+    if (fadingRef.current) return;
     localStorage.setItem('tr_dj_vol', String(vol));
     if (widgetRef.current) { try { widgetRef.current.setVolume(vol); } catch(_){} }
   }, [vol]);
+
+  const fadeVolume = (from, to, durMs, onDone) => {
+    const w = widgetRef.current;
+    if (!w) { onDone && onDone(); return; }
+    if (fadeRafRef.current) cancelAnimationFrame(fadeRafRef.current);
+    fadingRef.current = true;
+    try { w.setVolume(from); } catch(_){}
+    setVol(from);
+    const start = performance.now();
+    const step = (now) => {
+      const p = Math.min(1, (now - start) / durMs);
+      const v = Math.round(from + (to - from) * p);
+      try { w.setVolume(v); } catch(_){}
+      setVol(v);
+      if (p < 1) {
+        fadeRafRef.current = requestAnimationFrame(step);
+      } else {
+        fadeRafRef.current = null;
+        fadingRef.current = false;
+        try { localStorage.setItem('tr_dj_vol', String(to)); } catch(_){}
+        onDone && onDone();
+      }
+    };
+    fadeRafRef.current = requestAnimationFrame(step);
+  };
+
+  // /party end — fade music down from current volume to 0 over 2s, then pause and
+  // restore the user's saved volume so the next play resumes at their level.
+  useEffect(() => {
+    const onPartyEnd = () => {
+      const w = widgetRef.current;
+      if (!w) return;
+      const fromV = volRef.current;
+      const restoreV = parseInt(localStorage.getItem('tr_dj_vol_pre_party') || '35', 10) || 35;
+      fadeVolume(fromV, 0, 2000, () => {
+        try { w.pause(); } catch(_){}
+        try { w.setVolume(restoreV); } catch(_){}
+        setVol(restoreV);
+        try { localStorage.setItem('tr_dj_vol', String(restoreV)); } catch(_){}
+      });
+    };
+    window.addEventListener('tr-party-end', onPartyEnd);
+    return () => window.removeEventListener('tr-party-end', onPartyEnd);
+  }, []);
+
+  // /party — jump to "Sigma – Nobody to Love" @ 0:49, then fade volume to 100 over 2s.
+  // Starts the fade from the user's current volume if already playing, otherwise from 0.
+  useEffect(() => {
+    const onParty = () => {
+      const w = widgetRef.current;
+      if (!w) return;
+      const wasPlaying = playingRef.current;
+      const startVol = wasPlaying ? volRef.current : 0;
+      try { localStorage.setItem('tr_dj_vol_pre_party', String(volRef.current)); } catch(_){}
+      try { w.setVolume(startVol); } catch(_){}
+      const seekAndPlay = () => {
+        try { w.seekTo(49000); } catch(_){}
+        try { w.play(); } catch(_){}
+        fadeVolume(startVol, 100, 2000);
+      };
+      const jumpTo = (idx) => {
+        try { w.skip(idx); } catch(_){}
+        currentIdxRef.current = idx;
+        setTimeout(seekAndPlay, 220);
+      };
+      try {
+        w.getSounds((arr) => {
+          let idx = 4; // default: 5th track in the set
+          if (arr && arr.length) {
+            const match = arr.findIndex(s => s && s.title && /sigma/i.test(s.title) && /nobody.*to.*love/i.test(s.title));
+            if (match >= 0) idx = match;
+            else if (idx >= arr.length) idx = 0;
+          }
+          jumpTo(idx);
+        });
+      } catch(_) {
+        jumpTo(4);
+      }
+    };
+    window.addEventListener('tr-party', onParty);
+    return () => {
+      window.removeEventListener('tr-party', onParty);
+      if (fadeRafRef.current) cancelAnimationFrame(fadeRafRef.current);
+    };
+  }, []);
 
   const togglePlay = () => { if (!ready || !widgetRef.current) return; try { widgetRef.current.toggle(); } catch(_){} };
   const next = () => {
@@ -975,6 +1543,7 @@ function App() {
         </defs>
       </svg>
       <Terminal data={data} />
+      <PartyMode />
       <SidebarNav />
       <ThemeToggle />
       <FloatingMenu current="home" />
