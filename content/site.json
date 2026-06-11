@@ -1,7 +1,7 @@
 {
   "contact": {
     "headline": "Feel free to contact me!",
-    "blurb": "Based in London. Available for work. Response time is usually same day.",
+    "blurb": "Based in London. Available for work.",
     "footer": "© 2026 Toby Redshaw",
     "links": [
       {
@@ -20,7 +20,7 @@
   },
   "blog": {
     "title": "Notes, thoughts, and ideas.",
-    "intro": "Mostly posting thoughts I have or about things I'm passionate about.",
+    "intro": "Mostly posting thoughts I have or on things I'm passionate about.",
     "tags": [
       "Creative",
       "Sport",
