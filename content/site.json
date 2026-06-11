@@ -52,9 +52,9 @@
   "name": "Toby Redshaw.",
   "about": {
     "paragraphs": [
-      "Growing up I spent a disproportionate amount of time in the water. Fifteen years of early mornings, national competitions, and the non-stop repetitive training that quietly teaches you to work hard for something over a long period of time and the mindset, organisation, and sacrifices needed to do so. I didn't know it then, but that drive to improve and go after seemingly impossible goals has shaped everything I've done since.",
-      "After being told I wasn't \"smart enough\" to get into any top university nothing could stop me from getting into Imperial College. When it came to choosing a degree I wanted something where I could be creative, technical, and actually help people; Biomedical Engineering ticked all three boxes. My master's project took me back to my coding roots (13 years strong now) - I spent the year testing whether synthetically generated ECG data protects the privacy of the real patients it was built from. Unsurprisingly, it didn't (at least not reliably) - generative models allowed the attacker to identify up to 91% of individuals in some cases. Understanding the ethics of carrying out this project was my first learning, but my biggest takeaway was understanding the trust adoption barrier for AI in healthcare.",
-      "Since graduation I've worked as a Business Analyst at Podium Analytics, a sport-tech charity aiming to reduce injury in grassroots sport. Working across technology, product, research, and marketing has given me an ability to move between these worlds fluidly and translate between them, which I've come to realise is my most useful skill.",
+      "Growing up I spent a disproportionate amount of time in the water. Fifteen years of early mornings, national competitions, and the non-stop repetitive training that teaches you to work hard for something over a long period of time and the mindset, organisation, and sacrifices needed to do so. I didn't know it then, but that drive to improve and go after seemingly impossible goals has shaped everything I've done since.",
+      "After being told I wasn't \"smart enough\" to get into any top university, nothing could stop me from getting into Imperial College. When it came to choosing a degree, I wanted something where I could be creative, technical, and actually help people; Biomedical Engineering ticked all three boxes. My master's project took me back to my coding roots (13 years strong now) - I spent the year testing whether synthetically generated ECG data protects the privacy of the real patients it was built from. Unsurprisingly, it didn't (at least not reliably) - generative models allowed the attacker to successfully identify individuals up to 91% of the time in some cases. Understanding the ethics of carrying out this project was my first learning, but my biggest takeaway was understanding the trust adoption barrier for AI in healthcare.",
+      "Since graduating I've worked as a Business Analyst at Podium Analytics, a sport-tech charity aiming to reduce injury in grassroots sport. Working across technology, product, research, and marketing has given me an ability to move between these worlds fluidly and translate between them, which I've come to realise is my most useful skill.",
       "I love learning and building, and most recently I've been creating my own products: Lab2Launch, an AI-powered investor readiness tool for researchers and founders built on Claude, and Eddy, a swim coaching platform for adult beginners. Both started from a genuine problem I wanted to solve.",
       "What I'm looking for next sits at the intersection of AI and impact. Ideally that means healthcare — it's the space I understand best and care about most, whether that's accelerating drug development, improving diagnostics, or making AI work in a context where the stakes are real. I'm drawn to frontier AI companies, dedicated health tech at growth stage, or roles that sit between a platform and the companies building on it (applied AI, solutions, product) where I can work closely with the people actually building things and help them to do it better."
     ],
@@ -75,7 +75,7 @@
       }
     ]
   },
-  "tagline": "Currently building things, and my remaining time is spent swimming, cycling, or running.",
+  "tagline": "Currently building Eddy to help anxious swimmers become more confident in the water.",
   "now": [
     {
       "label": "LOCATION",
@@ -113,7 +113,7 @@
         ]
       ],
       "progress": 5,
-      "raceLabel": "70.3 · OCT 2026 · 23 WKS",
+      "raceLabel": "70.3 · OCT 2026 · 19 WKS",
       "raceDate": "2026-10-04",
       "raceStart": "2026-05-11"
     },
@@ -139,19 +139,19 @@
           "cycling"
         ],
         [
-          "2 hours",
-          "strength training"
+          "1 hour",
+          "running"
         ],
         [
-          "1.5 hours",
-          "running"
+          "1 hour",
+          "swimming"
         ]
       ]
     },
     "quote": {
       "label": "QUOTE",
-      "text": "Hell isn't a fire pit but a museum of regret.",
-      "by": "Exurb1a - The Fifth Science"
+      "text": "You don’t let them knock you out, you make them knock you out.",
+      "by": "Don Winslow - The Power of the Dog"
     },
     "music": {
       "label": "TOBY'S MIX - try /party",
